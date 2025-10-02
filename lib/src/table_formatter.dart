@@ -14,7 +14,9 @@ class TableFormatter {
       // Single value - treat as single row table
       return TableData(
         headers: ['(index)', 'Values'],
-        rows: [['0', _formatValue(data)]],
+        rows: [
+          ['0', _formatValue(data)],
+        ],
       );
     }
   }
@@ -40,7 +42,10 @@ class TableFormatter {
   }
 
   /// Format an array of objects (Maps)
-  static TableData _formatArrayOfObjects(List<Map> data, List<String>? columns) {
+  static TableData _formatArrayOfObjects(
+    List<Map> data,
+    List<String>? columns,
+  ) {
     if (data.isEmpty) {
       return TableData(headers: ['(index)'], rows: []);
     }
@@ -52,7 +57,7 @@ class TableFormatter {
     }
 
     // Filter columns if specified
-    final filteredKeys = columns != null 
+    final filteredKeys = columns != null
         ? allKeys.where((key) => columns.contains(key)).toList()
         : allKeys.toList();
 
@@ -64,12 +69,12 @@ class TableFormatter {
     for (int i = 0; i < data.length; i++) {
       final obj = data[i];
       final row = <String>[i.toString()];
-      
+
       for (final key in filteredKeys) {
         final value = obj[key];
         row.add(_formatValue(value));
       }
-      
+
       rows.add(row);
     }
 
@@ -77,17 +82,22 @@ class TableFormatter {
   }
 
   /// Format an array of arrays
-  static TableData _formatArrayOfArrays(List<List> data, List<String>? columns) {
+  static TableData _formatArrayOfArrays(
+    List<List> data,
+    List<String>? columns,
+  ) {
     if (data.isEmpty) {
       return TableData(headers: ['(index)'], rows: []);
     }
 
     // Find the maximum length to determine column count
-    final maxLength = data.map((arr) => arr.length).reduce((a, b) => a > b ? a : b);
-    
+    final maxLength = data
+        .map((arr) => arr.length)
+        .reduce((a, b) => a > b ? a : b);
+
     // Create numeric column headers
     final numericHeaders = List.generate(maxLength, (i) => i.toString());
-    
+
     // Filter columns if specified (treat as indices)
     final filteredIndices = columns != null
         ? numericHeaders.where((header) => columns.contains(header)).toList()
@@ -99,13 +109,13 @@ class TableFormatter {
     for (int i = 0; i < data.length; i++) {
       final arr = data[i];
       final row = <String>[i.toString()];
-      
+
       for (final indexStr in filteredIndices) {
         final index = int.tryParse(indexStr) ?? 0;
         final value = index < arr.length ? arr[index] : null;
         row.add(_formatValue(value));
       }
-      
+
       rows.add(row);
     }
 
@@ -131,7 +141,7 @@ class TableFormatter {
     }
 
     final keys = data.keys.map((k) => k.toString()).toList();
-    
+
     // Filter keys if columns specified
     final filteredKeys = columns != null
         ? keys.where((key) => columns.contains(key)).toList()
@@ -168,7 +178,10 @@ class TableFormatter {
   }
 
   /// Generate ASCII table string from table data
-  static String generateAsciiTable(TableData tableData, {bool enableColors = false}) {
+  static String generateAsciiTable(
+    TableData tableData, {
+    bool enableColors = false,
+  }) {
     if (tableData.rows.isEmpty) {
       return 'Empty table';
     }
@@ -251,8 +264,5 @@ class TableData {
   final List<String> headers;
   final List<List<String>> rows;
 
-  const TableData({
-    required this.headers,
-    required this.rows,
-  });
+  const TableData({required this.headers, required this.rows});
 }

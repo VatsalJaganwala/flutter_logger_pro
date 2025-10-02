@@ -9,7 +9,8 @@ class StackTraceParser {
       final frame = traceLines[i];
 
       // Skip logger internal frames
-      if (frame.contains('package:flutter_logger_pro') || frame.contains('dart-sdk')) {
+      if (frame.contains('package:flutter_logger_pro') ||
+          frame.contains('dart-sdk')) {
         continue;
       }
 
@@ -56,7 +57,8 @@ class StackTraceParser {
 
     for (int i = 0; i < traceLines.length && i < 15; i++) {
       final frame = traceLines[i];
-      if (frame.contains('package:flutter_logger_pro') || frame.contains('dart-sdk')) {
+      if (frame.contains('package:flutter_logger_pro') ||
+          frame.contains('dart-sdk')) {
         continue;
       }
 

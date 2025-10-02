@@ -125,20 +125,30 @@ class PlatformOutputImpl {
       }
     } catch (e) {
       // Final fallback to regular string output
-      final fallbackMessage = label != null ? '$label: ${object.toString()}' : object.toString();
+      final fallbackMessage = label != null
+          ? '$label: ${object.toString()}'
+          : object.toString();
       output(fallbackMessage, level);
     }
   }
 
-  static void _fallbackJsonOutput(Object? object, String displayLabel, String level) {
+  static void _fallbackJsonOutput(
+    Object? object,
+    String displayLabel,
+    String level,
+  ) {
     try {
       // Format as JSON string with indentation
       final jsonString = const JsonEncoder.withIndent('  ').convert(object);
-      final message = displayLabel.isNotEmpty ? '$displayLabel:\n$jsonString' : jsonString;
+      final message = displayLabel.isNotEmpty
+          ? '$displayLabel:\n$jsonString'
+          : jsonString;
       output(message, level);
     } catch (e) {
       // Ultimate fallback
-      final message = displayLabel.isNotEmpty ? '$displayLabel: ${object.toString()}' : object.toString();
+      final message = displayLabel.isNotEmpty
+          ? '$displayLabel: ${object.toString()}'
+          : object.toString();
       output(message, level);
     }
   }
@@ -181,7 +191,9 @@ class PlatformOutputImpl {
 
     // Add timestamp first if provided
     if (includeTimestamp) {
-      final timestamp = OutputFormatter.formatTimestamp(dateTimeFormat ?? 'HH:mm:ss');
+      final timestamp = OutputFormatter.formatTimestamp(
+        dateTimeFormat ?? 'HH:mm:ss',
+      );
       parts.add('[$timestamp]');
     }
 
@@ -266,7 +278,9 @@ class PlatformOutputImpl {
       }
     } catch (e) {
       // Final fallback to regular string output
-      final fallbackMessage = label != null ? '$label: ${data.toString()}' : data.toString();
+      final fallbackMessage = label != null
+          ? '$label: ${data.toString()}'
+          : data.toString();
       output(fallbackMessage, level);
     }
   }
@@ -279,23 +293,36 @@ class PlatformOutputImpl {
     return data is Map;
   }
 
-  static void _fallbackTableOutput(Object? data, List<String>? columns, String displayLabel, String level) {
+  static void _fallbackTableOutput(
+    Object? data,
+    List<String>? columns,
+    String displayLabel,
+    String level,
+  ) {
     try {
       // Use our custom table formatter
       final tableData = TableFormatter.formatTable(data, columns);
       final tableString = TableFormatter.generateAsciiTable(tableData);
 
-      final message = displayLabel.isNotEmpty ? '$displayLabel:\n$tableString' : tableString;
+      final message = displayLabel.isNotEmpty
+          ? '$displayLabel:\n$tableString'
+          : tableString;
       output(message, level);
     } catch (e) {
       // Ultimate fallback
-      final message = displayLabel.isNotEmpty ? '$displayLabel: ${data.toString()}' : data.toString();
+      final message = displayLabel.isNotEmpty
+          ? '$displayLabel: ${data.toString()}'
+          : data.toString();
       output(message, level);
     }
   }
 
   /// Log JSON object to IDE console using dart:developer log
-  static void _logToIdeConsole(Object? object, String level, String displayLabel) {
+  static void _logToIdeConsole(
+    Object? object,
+    String level,
+    String displayLabel,
+  ) {
     if (!kDebugMode) {
       return;
     }
@@ -304,12 +331,21 @@ class PlatformOutputImpl {
       developer.log(jsonString, name: displayLabel, level: _getLogLevel(level));
     } catch (e) {
       // Fallback for non-JSON-serializable objects
-      developer.log(object.toString(), name: displayLabel, level: _getLogLevel(level));
+      developer.log(
+        object.toString(),
+        name: displayLabel,
+        level: _getLogLevel(level),
+      );
     }
   }
 
   /// Log table data to IDE console using dart:developer log
-  static void _logTableToIdeConsole(Object? data, List<String>? columns, String level, String displayLabel) {
+  static void _logTableToIdeConsole(
+    Object? data,
+    List<String>? columns,
+    String level,
+    String displayLabel,
+  ) {
     if (!kDebugMode) {
       return;
     }
@@ -318,10 +354,18 @@ class PlatformOutputImpl {
       final tableData = TableFormatter.formatTable(data, columns);
       final tableString = TableFormatter.generateAsciiTable(tableData);
 
-      developer.log('\n$tableString', name: displayLabel, level: _getLogLevel(level));
+      developer.log(
+        '\n$tableString',
+        name: displayLabel,
+        level: _getLogLevel(level),
+      );
     } catch (e) {
       // Fallback
-      developer.log(data.toString(), name: displayLabel, level: _getLogLevel(level));
+      developer.log(
+        data.toString(),
+        name: displayLabel,
+        level: _getLogLevel(level),
+      );
     }
   }
 

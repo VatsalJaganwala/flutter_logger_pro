@@ -22,7 +22,7 @@ class PlatformOutputImpl {
     // Split by lines first to preserve formatting
     final lines = message.split('\n');
     final buffer = StringBuffer();
-    
+
     for (final line in lines) {
       if (line.length <= _maxPrintLength) {
         // If adding this line would exceed the limit, flush the buffer
@@ -33,7 +33,7 @@ class PlatformOutputImpl {
             buffer.clear();
           }
         }
-        
+
         if (buffer.isNotEmpty) {
           buffer.writeln();
         }
@@ -45,18 +45,18 @@ class PlatformOutputImpl {
           print(buffer.toString());
           buffer.clear();
         }
-        
+
         // Split long line into chunks
         for (int i = 0; i < line.length; i += _maxPrintLength) {
-          final end = (i + _maxPrintLength < line.length) 
-              ? i + _maxPrintLength 
+          final end = (i + _maxPrintLength < line.length)
+              ? i + _maxPrintLength
               : line.length;
           // ignore: avoid_print
           print(line.substring(i, end));
         }
       }
     }
-    
+
     // Print any remaining content in buffer
     if (buffer.isNotEmpty) {
       // ignore: avoid_print
@@ -80,10 +80,10 @@ class PlatformOutputImpl {
     try {
       // Format JSON with proper indentation for IDE/terminal readability
       final jsonString = const JsonEncoder.withIndent('  ').convert(object);
-      
+
       // Create a message with optional label
       final message = label != null ? '$label:\n$jsonString' : jsonString;
-      
+
       // Use the existing formatter to maintain consistent styling
       final formattedMessage = OutputFormatter.formatMessage(
         level: level,
@@ -101,10 +101,10 @@ class PlatformOutputImpl {
       _printLongString(formattedMessage);
     } catch (e) {
       // Fallback for non-JSON-serializable objects
-      final fallbackMessage = label != null 
-          ? '$label: ${object.toString()}' 
+      final fallbackMessage = label != null
+          ? '$label: ${object.toString()}'
           : object.toString();
-      
+
       final formattedMessage = OutputFormatter.formatMessage(
         level: level,
         message: fallbackMessage,
@@ -139,13 +139,16 @@ class PlatformOutputImpl {
     try {
       // Format the data into table structure
       final tableData = TableFormatter.formatTable(data, columns);
-      
+
       // Generate ASCII table
-      final tableString = TableFormatter.generateAsciiTable(tableData, enableColors: enableColors);
-      
+      final tableString = TableFormatter.generateAsciiTable(
+        tableData,
+        enableColors: enableColors,
+      );
+
       // Create message with optional label
       final message = label != null ? '$label:\n$tableString' : tableString;
-      
+
       // Use the existing formatter to maintain consistent styling
       final formattedMessage = OutputFormatter.formatMessage(
         level: level,
@@ -163,10 +166,10 @@ class PlatformOutputImpl {
       _printLongString(formattedMessage);
     } catch (e) {
       // Fallback to regular string output
-      final fallbackMessage = label != null 
-          ? '$label: ${data.toString()}' 
+      final fallbackMessage = label != null
+          ? '$label: ${data.toString()}'
           : data.toString();
-      
+
       final formattedMessage = OutputFormatter.formatMessage(
         level: level,
         message: fallbackMessage,

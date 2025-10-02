@@ -59,7 +59,7 @@ class OutputFormatter {
 
     if (locationUrl != null) {
       // Extract just filename:line from the full URL for shorter display
-      final shortLocation = locationUrl;//.split('/').last;
+      final shortLocation = locationUrl; //.split('/').last;
 
       // Calculate padding to align location at the right
       final contentLength = AnsiColors.stripAnsiCodes(
@@ -259,7 +259,7 @@ class OutputFormatter {
 
     // Replace message placeholder
     if (result.contains('{message}')) {
-      final coloredMessage = enableColors 
+      final coloredMessage = enableColors
           ? _getColoredMessage(level, message, enableColors)
           : message;
       result = result.replaceAll('{message}', coloredMessage);
@@ -298,7 +298,9 @@ class OutputFormatter {
 
     // If no valid placeholders were found, consider the template invalid
     if (!hasValidPlaceholder) {
-      throw FormatException('Invalid message template: no recognized placeholders found');
+      throw FormatException(
+        'Invalid message template: no recognized placeholders found',
+      );
     }
 
     return result;

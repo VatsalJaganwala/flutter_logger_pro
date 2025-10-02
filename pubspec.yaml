@@ -1,5 +1,5 @@
 name: flutter_logger_pro
-description: A modern, feature-rich logging library for Dart and Flutter with intelligent formatting, global configuration, and advanced JSON logging. Optimized for web development with interactive browser console support.
+description: A modern logging library for Dart and Flutter with intelligent formatting, JSON logging, and interactive web console support.
 version: 0.0.1
 homepage: https://github.com/VatsalJaganwala/flutter_logger_pro
 repository: https://github.com/VatsalJaganwala/flutter_logger_pro
@@ -12,8 +12,6 @@ topics:
   - console
   - web
   - flutter
-  - json
-  - table
 
 environment:
   sdk: ^3.9.2
