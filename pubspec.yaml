@@ -1,6 +1,6 @@
 name: flutter_logger_pro
 description: A modern logging library for Dart and Flutter with intelligent formatting, JSON logging, and interactive web console support.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/VatsalJaganwala/flutter_logger_pro
 repository: https://github.com/VatsalJaganwala/flutter_logger_pro
 issue_tracker: https://github.com/VatsalJaganwala/flutter_logger_pro/issues
@@ -31,7 +31,7 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
-flutter:
+#flutter:
 
   # To add assets to your package, add an assets section, like this:
   # assets:
