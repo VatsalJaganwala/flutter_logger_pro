@@ -1,4 +1,5 @@
 # Flutter Logger Pro 📝
+#### Where logging meets the web! 🚀
 
 A modern, feature-rich logging library for Dart and Flutter applications that makes debugging and monitoring effortless. **Specially optimized for web development** with interactive browser console integration, Flutter Logger Pro provides intelligent formatting, global configuration, and advanced JSON logging capabilities.
 
@@ -915,7 +916,7 @@ flutter build web --release
 - **Configurable**: Fine-tune logging for different environments
 - **Cross-Platform**: Same API works on web, mobile, desktop, and server
 - **Reliable**: Comprehensive error handling and fallbacks
-- **Wide Compatibility**: Supports Dart SDK `>=3.0.0 <4.0.0` for maximum project compatibility
+- **Wide Compatibility**: Supports Dart SDK `>3.3.0 <4.0.0` for maximum project compatibility
 
 ### ✅ **Developer Experience**
 
