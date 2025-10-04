@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.0.4]
+
+### 🔧 Fixed
+
+#### Minor Issues Fixed & Documentation Improvements
 
 ## [0.0.3]
 
