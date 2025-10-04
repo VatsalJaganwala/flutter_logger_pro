@@ -58,7 +58,7 @@ Add Flutter Logger Pro to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_logger_pro: ^0.0.1
+  flutter_logger_pro: ^0.0.3
 ```
 
 ### 📦 **Compatibility**
@@ -76,7 +76,7 @@ This broad compatibility ensures the package works with both legacy and cutting-
 dependencies:
   flutter:
     sdk: flutter
-  flutter_logger_pro: ^0.0.1
+  flutter_logger_pro: ^0.0.3
 
 dev_dependencies:
   flutter_test:
@@ -158,11 +158,11 @@ void basicLoggingExample() {
 
 **🌐 Browser Console Output:**
 
-![Browser Console Output](example/assets/basic_logging_browser.png)
+![Browser Console Output](https://raw.githubusercontent.com/VatsalJaganwala/flutter_logger_pro/main/example/assets/basic_logging_browser.png)
 
 **🖥️ IDE Console Output:**
 
-![IDE Console Output](example/assets/basic_logging_ide.png)
+![IDE Console Output](https://raw.githubusercontent.com/VatsalJaganwala/flutter_logger_pro/main/example/assets/basic_logging_ide.png)
 
 ### JSON Logging
 
@@ -210,11 +210,11 @@ void jsonLoggingExample() {
 
 **🌐 Browser Console Output:**
 
-![Browser Console Output](example/assets/20251004_153029_image.png)
+![Browser Console Output](https://raw.githubusercontent.com/VatsalJaganwala/flutter_logger_pro/main/example/assets/20251004_153029_image.png)
 
 **🖥️ IDE Console Output:**
 
-![](example/assets/20251004_152557_image.png)![](example/assets/20251004_152656_image.png)![](example/assets/20251004_152741_image.png)![](example/assets/20251004_152819_image.png)
+![](https://raw.githubusercontent.com/VatsalJaganwala/flutter_logger_pro/main/example/assets/20251004_152557_image.png)![](https://raw.githubusercontent.com/VatsalJaganwala/flutter_logger_pro/main/example/assets/20251004_152656_image.png)![](https://raw.githubusercontent.com/VatsalJaganwala/flutter_logger_pro/main/example/assets/20251004_152741_image.png)![](https://raw.githubusercontent.com/VatsalJaganwala/flutter_logger_pro/main/example/assets/20251004_152819_image.png)
 
 ### Table Logging
 
@@ -267,13 +267,13 @@ void tableLoggingExample() {
 
 **🌐 Browser Console Output:**
 
-![](example/assets/20251004_155615_image.png)![](example/assets/20251004_155659_image.png)
+![](https://raw.githubusercontent.com/VatsalJaganwala/flutter_logger_pro/main/example/assets/20251004_155615_image.png)![](https://raw.githubusercontent.com/VatsalJaganwala/flutter_logger_pro/main/example/assets/20251004_155659_image.png)
 
 **🖥️ IDE Console Output:**
 
 
-![](example/assets/20251004_160202_image.png)
-![](example/assets/20251004_160235_image.png)
+![](https://raw.githubusercontent.com/VatsalJaganwala/flutter_logger_pro/main/example/assets/20251004_160202_image.png)
+![](https://raw.githubusercontent.com/VatsalJaganwala/flutter_logger_pro/main/example/assets/20251004_160235_image.png)
 
 #### Supported Data Formats
 
