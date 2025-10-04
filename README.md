@@ -7,10 +7,21 @@ A modern, feature-rich logging library for Dart and Flutter applications that ma
 Flutter Logger Pro is built with **web development as the primary focus**, offering:
 
 - **🔍 Interactive Browser Console**: JSON objects become expandable, clickable trees in Chrome/Firefox DevTools
-- **📊 Native console.table()**: Automatic table formatting using browser's built-in console.table() 
+- **📊 Native console.table()**: Automatic table formatting using browser's built-in console.table()
 - **🎯 Dual Output**: Logs appear in both browser console AND IDE debug console simultaneously
 - **⚡ Zero Configuration**: Works perfectly out-of-the-box in Flutter Web projects
 - **🛠️ Developer Tools Integration**: Seamless integration with browser developer tools
+
+### 📸 **See It In Action**
+
+Flutter Logger Pro provides beautiful, dual-output logging that works seamlessly across platforms:
+
+
+| 🌐**Browser Console**                                        | 🖥️**IDE Console**                                  |
+| -------------------------------------------------------------- | ------------------------------------------------------ |
+| ![Browser Console](example/assets/basic_logging_browser.png) | ![IDE Console](example/assets/basic_logging_ide.png) |
+| Interactive, expandable objects                              | Clean, formatted text output                         |
+| Native DevTools integration                                  | Perfect for development debugging                    |
 
 ## 📋 Table of Contents
 
@@ -82,6 +93,7 @@ dependencies:
 ```
 
 **For Flutter Web projects** (recommended):
+
 ```yaml
 dependencies:
   flutter:
@@ -110,11 +122,13 @@ void main() {
 import 'package:flutter_logger_pro/flutter_logger_pro.dart';
 
 void main() {
-  // Optional: Configure for optimal web experience
+  // Configure for optimal web experience
   LoggerOptions.instance.configure(
+    enableLogging: true,
     enableColors: true,
-    includeTimestamp: true,
     minLogLevel: LogLevel.debug,
+    includeTimestamp: true,
+    showFunctionName: true,
   );
 
   final logger = Logger(tag: 'WebApp');
@@ -125,19 +139,28 @@ void main() {
   logger.warn('⚠️ This is a warning');
   logger.error('❌ Something went wrong');
 
+  // Short aliases for convenience
+  logger.d('Debug using short alias');
+  logger.i('Info using short alias');
+  logger.w('Warning using short alias');
+  logger.e('Error using short alias');
+
   // 🔥 Interactive JSON logging - click to expand in browser DevTools!
-  logger.json({
-    'user': {'id': 123, 'name': 'John', 'preferences': {'theme': 'dark'}},
-    'action': 'login',
-    'timestamp': DateTime.now().toIso8601String()
-  }, label: 'User Event');
+  final user = {
+    'id': 123,
+    'name': 'John Doe',
+    'email': 'john@example.com',
+    'preferences': {'theme': 'dark', 'notifications': true},
+  };
+  logger.jsonInfo(user, label: 'User Data');
   
   // 📊 Interactive table logging - uses native console.table() in browser!
   final users = [
-    {'id': 1, 'name': 'Alice', 'age': 25, 'country': 'USA'},
-    {'id': 2, 'name': 'Bob', 'age': 30, 'country': 'Canada'},
+    {'id': 1, 'name': 'Alice', 'age': 25, 'city': 'Boston'},
+    {'id': 2, 'name': 'Bob', 'age': 30, 'city': 'Seattle'},
+    {'id': 3, 'name': 'Charlie', 'age': 35, 'city': 'Denver'},
   ];
-  logger.table(users, label: 'User List');
+  logger.tableInfo(users, label: 'User List');
 }
 ```
 
@@ -148,176 +171,294 @@ void main() {
 ### Basic Logging
 
 ```dart
-import 'package:flutter_logger_pro/flutter_logger_pro.dart';
+void basicLoggingExample() {
+  final logger = Logger(tag: 'BasicDemo');
 
-class UserService {
-  final logger = Logger(tag: 'UserService');
+  logger.debug('🔧 Debug: Detailed information for developers');
+  logger.info('ℹ️ Info: General application events');
+  logger.warn('⚠️ Warning: Something needs attention');
+  logger.error('❌ Error: Something went wrong');
 
-  Future<User> loginUser(String email) async {
-    logger.debug('Starting login process for: $email');
-
-    try {
-      final user = await authenticateUser(email);
-      logger.info('User logged in successfully: ${user.name}');
-      return user;
-    } catch (e) {
-      logger.error('Login failed: $e');
-      rethrow;
-    }
-  }
+  // Short aliases for convenience
+  logger.d('Debug using short alias');
+  logger.i('Info using short alias');
+  logger.w('Warning using short alias');
+  logger.e('Error using short alias');
 }
 ```
 
-**Output:**
+**🌐 Browser Console Output:**
 
-```
-[UserService][DEBUG] Starting login process for: john@example.com
-[UserService][INFO] User logged in successfully: John Doe
-```
+![Browser Console Output](example/assets/basic_logging_browser.png)
+
+**🖥️ IDE Console Output:**
+
+![IDE Console Output](example/assets/basic_logging_ide.png)
 
 ### JSON Logging
 
-Perfect for APIs, debugging complex objects, and data analysis:
-
 ```dart
-class ApiService {
-  final logger = Logger(tag: 'API');
+void jsonLoggingExample() {
+  final logger = Logger(tag: 'JsonDemo');
 
-  Future<void> handleRequest(Map<String, dynamic> request) async {
-    // Log incoming request
-    logger.jsonInfo(request, label: 'Incoming Request');
+  // Simple object logging
+  final user = {
+    'id': 123,
+    'name': 'John Doe',
+    'email': 'john@example.com',
+    'preferences': {'theme': 'dark', 'notifications': true},
+  };
+  logger.jsonInfo(user, label: 'User Data');
 
-    try {
-      final response = await processRequest(request);
+  // API response example
+  final apiResponse = {
+    'success': true,
+    'data': [
+      {'id': 1, 'name': 'Alice', 'active': true},
+      {'id': 2, 'name': 'Bob', 'active': false},
+    ],
+    'meta': {
+      'total': 2,
+      'page': 1,
+      'timestamp': DateTime.now().toIso8601String(),
+    },
+  };
+  logger.jsonInfo(apiResponse, label: 'API Response');
 
-      // Log successful response
-      logger.jsonInfo(response, label: 'API Response');
+  // Error context logging
+  final errorInfo = {
+    'error': 'Network timeout',
+    'code': 'TIMEOUT_ERROR',
+    'details': {'url': '/api/users', 'timeout': '30s', 'retryCount': 3},
+  };
+  logger.jsonError(errorInfo, label: 'Network Error');
 
-    } catch (error) {
-      // Log error details
-      logger.jsonError({
-        'error': error.toString(),
-        'request': request,
-        'timestamp': DateTime.now().toIso8601String(),
-        'stackTrace': StackTrace.current.toString(),
-      }, label: 'API Error');
-    }
-  }
+  // Different log levels for JSON
+  logger.jsonDebug({'debug': 'data'}, label: 'Debug Info');
+  logger.jsonWarn({'warning': 'deprecated API'}, label: 'API Warning');
 }
 ```
 
-**IDE Output:**
+**🌐 Browser Console Output:**
 
-```
-[API][INFO] Incoming Request:
-{
-  "userId": 12345,
-  "action": "updateProfile",
-  "data": {
-    "name": "John Doe",
-    "email": "john@example.com"
-  }
+![Browser Console Output](example\assets\20251004_153029_image.png)
+
+**🖥️ IDE Console Output:**
+
+![](example\assets\20251004_152557_image.png)![](example\assets\20251004_152656_image.png)![](example\assets\20251004_152741_image.png)![](example\assets\20251004_152819_image.png)
+
+### Table Logging
+
+```dart
+
+void tableLoggingExample() {
+  final logger = Logger(tag: 'TableDemo');
+
+  // Array of objects - most common use case
+  final users = [
+    {'id': 1, 'name': 'Alice', 'age': 25, 'city': 'Boston'},
+    {'id': 2, 'name': 'Bob', 'age': 30, 'city': 'Seattle'},
+    {'id': 3, 'name': 'Charlie', 'age': 35, 'city': 'Denver'},
+  ];
+  logger.tableInfo(users, label: 'User List');
+
+  // Single object - keys become rows
+  final config = {
+    'appName': 'MyApp',
+    'version': '1.2.0',
+    'environment': 'production',
+    'debug': false,
+  };
+  logger.tableInfo(config, label: 'App Configuration');
+
+  // Column filtering - show only specific columns
+  logger.tableInfo(
+    users,
+    columns: ['name', 'city'],
+    label: 'Users (Name & City Only)',
+  );
+
+  // Different log levels for tables
+  final metrics = [
+    {'metric': 'CPU Usage', 'value': '45%', 'status': 'OK'},
+    {'metric': 'Memory', 'value': '78%', 'status': 'Warning'},
+    {'metric': 'Disk Space', 'value': '92%', 'status': 'Critical'},
+  ];
+  logger.tableWarn(metrics, label: 'System Metrics');
+
+  // Array of arrays format
+  final matrix = [
+    ['Product', 'Price', 'Stock'],
+    ['Laptop', 999.99, 15],
+    ['Mouse', 29.99, 50],
+    ['Keyboard', 79.99, 25],
+  ];
+  logger.tableInfo(matrix, label: 'Product Inventory');
 }
 ```
 
-**Browser Console:**
-Interactive, collapsible object tree for easy exploration.
+**🌐 Browser Console Output:**
 
-### Global Configuration
+![](example\assets\20251004_155615_image.png)![](example\assets\20251004_155659_image.png)
 
-Set up once, benefit everywhere:
+**🖥️ IDE Console Output:**
+
+
+![](example\assets\20251004_160202_image.png)
+
+![](example\assets\20251004_160235_image.png)
+
+### Configuration
 
 ```dart
-void main() {
-  // Development configuration
+void configurationExample() {
+  // Global configuration - affects all new loggers
   LoggerOptions.instance.configure(
+    enableLogging: true,
     enableColors: true,
-    minLogLevel: LogLevel.debug,
+    minLogLevel: LogLevel.info, // Only info and above
     includeTimestamp: true,
-    dateTimeFormat: 'HH:mm:ss.SSS',
-    // showClassName: true, // Hidden for future release
+    dateTimeFormat: 'HH:mm:ss',
     showFunctionName: true,
-    showLocation: true,  // Helpful for debugging
+    showLocation: false,
   );
 
-  runApp(MyApp());
-}
+  final globalLogger = Logger(tag: 'Global');
+  globalLogger.debug('This debug message won\'t show (filtered by minLogLevel)');
+  globalLogger.info('This info message will show');
 
-// Production configuration
-void configureForProduction() {
+  // Per-instance overrides
+  final debugLogger = Logger(
+    tag: 'Debug',
+    enableColors: false, // Override global setting
+    showLocation: true, // Override global setting
+  );
+  debugLogger.info('Custom logger with different settings');
+
+  // Different message template
   LoggerOptions.instance.configure(
-    enableColors: false,        // No colors in production logs
-    minLogLevel: LogLevel.warn, // Only warnings and errors
-    includeTimestamp: true,
-    dateTimeFormat: 'yyyy-MM-dd HH:mm:ss',
-    showLocation: false,        // Cleaner production logs
+    messageTemplate: '[{timestamp}] {level} | {tag} | {message}',
   );
+
+  final customLogger = Logger(tag: 'Custom');
+  customLogger.info('Message with custom template');
 }
 ```
 
-**Environment-Specific Setup:**
+### Real-World Examples
 
 ```dart
-import 'package:flutter/foundation.dart';
+/// API service with comprehensive logging
+void apiServiceExample() {
+  final apiLogger = Logger(tag: 'ApiService');
 
-void configureLogger() {
-  if (kDebugMode) {
-    // Development: Verbose logging
-    LoggerOptions.instance.configure(
-      minLogLevel: LogLevel.debug,
-      showLocation: true,
-    );
-  } else {
-    // Production: Essential logging only
-    LoggerOptions.instance.configure(
-      minLogLevel: LogLevel.error,
-      showLocation: false,
-    );
+  apiLogger.info('🌐 Making API request to /users');
+
+  // Log request details
+  final requestData = {
+    'method': 'GET',
+    'url': '/api/users',
+    'headers': {'Authorization': 'Bearer token123'},
+    'timestamp': DateTime.now().toIso8601String(),
+  };
+  apiLogger.jsonDebug(requestData, label: 'Request Details');
+
+  // Simulate response
+  final responseData = {
+    'status': 200,
+    'data': [
+      {'id': 1, 'name': 'Alice'},
+      {'id': 2, 'name': 'Bob'},
+    ],
+    'duration': '150ms',
+  };
+  apiLogger.jsonInfo(responseData, label: 'API Response');
+}
+
+/// User authentication flow with logging
+void authenticationExample() {
+  final authLogger = Logger(tag: 'Auth');
+
+  authLogger.info('🔐 User login attempt');
+
+  // Log login attempt
+  final loginData = {
+    'email': 'user@example.com',
+    'timestamp': DateTime.now().toIso8601String(),
+    'ipAddress': '192.168.1.100',
+    'userAgent': 'Flutter Web App',
+  };
+  authLogger.jsonDebug(loginData, label: 'Login Attempt');
+
+  // Success case
+  authLogger.info('✅ User authenticated successfully');
+
+  // Log user session
+  final sessionInfo = {
+    'userId': 123,
+    'sessionId': 'sess_abc123',
+    'expiresAt': DateTime.now().add(Duration(hours: 24)).toIso8601String(),
+    'permissions': ['read', 'write'],
+  };
+  authLogger.jsonInfo(sessionInfo, label: 'User Session Created');
+}
+
+/// Error handling with comprehensive logging
+void errorHandlingExample() {
+  final errorLogger = Logger(tag: 'ErrorHandler');
+
+  try {
+    // Simulate an error
+    throw Exception('Database connection failed');
+  } catch (e, stackTrace) {
+    // Log comprehensive error information
+    final errorContext = {
+      'error': e.toString(),
+      'type': e.runtimeType.toString(),
+      'timestamp': DateTime.now().toIso8601String(),
+      'context': {'operation': 'fetchUserData', 'userId': 123, 'retryCount': 2},
+      'stackTrace': stackTrace.toString().split('\n').take(5).toList(),
+    };
+
+    errorLogger.jsonError(errorContext, label: 'Database Error');
+    errorLogger.error('❌ Operation failed: ${e.toString()}');
   }
 }
-```
 
-### Per-Instance Overrides
+/// Performance monitoring example
+void performanceExample() {
+  final perfLogger = Logger(tag: 'Performance');
 
-Fine-tune individual loggers for specific needs:
+  // Track operation timing
+  final stopwatch = Stopwatch()..start();
 
-```dart
-import 'package:flutter/foundation.dart';
+  // Simulate some work
+  Future.delayed(Duration(milliseconds: 100));
 
-class MyApp {
-  void setupLoggers() {
-    // Global settings: minimal logging
-    LoggerOptions.instance.configure(
-      enableLogging: false,
-      enableColors: false,
-    );
+  stopwatch.stop();
 
-    // Critical system logger: always enabled
-    final systemLogger = Logger(
-      tag: 'SYSTEM',
-      enableLogging: true,
-      enableColors: true,
-    );
+  // Log performance metrics
+  final metrics = [
+    {
+      'operation': 'dataLoad',
+      'duration': '${stopwatch.elapsedMilliseconds}ms',
+      'status': 'success',
+    },
+    {'operation': 'renderUI', 'duration': '45ms', 'status': 'success'},
+    {'operation': 'apiCall', 'duration': '230ms', 'status': 'timeout'},
+  ];
 
-    // Debug logger: only for development
-    final debugLogger = Logger(
-      tag: 'DEBUG',
-      enableLogging: kDebugMode,
-      showLocation: true,
-    );
+  perfLogger.tableInfo(metrics, label: 'Operation Performance');
 
-    // Performance logger: custom formatting
-    final perfLogger = Logger(
-      tag: 'PERF',
-      enableLogging: true,
-      showFunctionName: true,
-      // showClassName: false, // Hidden for future release
-    );
+  // Memory usage
+  final memoryInfo = {
+    'heapUsed': '45MB',
+    'heapTotal': '128MB',
+    'external': '12MB',
+    'timestamp': DateTime.now().toIso8601String(),
+  };
 
-    systemLogger.error('System error occurred');  // Always logs
-    debugLogger.debug('Debug info');              // Only in debug mode
-    perfLogger.info('Operation completed');       // Custom format
-  }
+  perfLogger.jsonInfo(memoryInfo, label: 'Memory Usage');
 }
 ```
 
@@ -385,178 +526,100 @@ LogController.setLogLevel('warn');  // Only warnings and errors
 LogController.enableDebugMode();    // Full debug information
 ```
 
-### Platform-Optimized JSON Logging
+### Advanced JSON Logging
 
-Flutter Logger Pro automatically adapts to your environment for the best debugging experience:
-
-#### 🌐 **Browser Console** (Primary Platform)
-
-**The magic happens in web browsers!** Flutter Logger Pro creates interactive, explorable object trees:
+Flutter Logger Pro automatically adapts to your environment for the best debugging experience across all platforms:
 
 ```dart
-logger.json({
-  'user': {'id': 123, 'name': 'John', 'preferences': {'theme': 'dark'}},
-  'action': 'login',
-  'metadata': {'timestamp': '2024-01-15T10:30:00Z'},
-  'context': {
-    'session': {'id': 'sess_123', 'duration': '45min'},
-    'device': {'type': 'desktop', 'browser': 'Chrome'}
-  }
-}, label: 'User Event');
-```
+void advancedJsonExample() {
+  final logger = Logger(tag: 'JsonAdvanced');
 
-**Browser Console Result:**
-- 🔍 **Interactive Object Tree**: Click to expand/collapse nested objects
-- 🎯 **Native JavaScript Inspection**: Full browser DevTools integration
-- 📊 **Syntax Highlighting**: Automatic color coding of different data types
-- 🚀 **Performance**: No JSON serialization overhead for complex objects
-
-#### 🖥️ **IDE/Native Environment**
-
-Clean, formatted output for development and server applications:
-
-**IDE Console Output:**
-```
-[API][INFO] User Event:
-{
-  "user": {
-    "id": 123,
-    "name": "John",
-    "preferences": {
-      "theme": "dark"
+  // Complex nested object logging
+  final userEvent = {
+    'user': {'id': 123, 'name': 'John', 'preferences': {'theme': 'dark'}},
+    'action': 'login',
+    'metadata': {'timestamp': DateTime.now().toIso8601String()},
+    'context': {
+      'session': {'id': 'sess_123', 'duration': '45min'},
+      'device': {'type': 'desktop', 'platform': 'web'}
     }
-  },
-  "action": "login",
-  "metadata": {
-    "timestamp": "2024-01-15T10:30:00Z"
-  }
+  };
+  
+  logger.jsonInfo(userEvent, label: 'User Event');
 }
 ```
 
-### 🌐 **Web Development Examples**
+**Cross-Platform Results:**
 
-#### Flutter Web API Debugging
+- **🌐 Web Browser**: Interactive, expandable object trees in DevTools
+- **�️ IDfE/Native**: Clean, formatted JSON with proper indentation
+- **📱 Mobile**: Colored console output with structured formatting
+- **� PerfIormance**: Optimized for each platform automatically
+
+### Table Logging Examples
+
+Flutter Logger Pro provides powerful table formatting that works beautifully across all platforms:
 
 ```dart
-class WebApiService {
-  final logger = Logger(tag: 'WEB_API');
+void tableLoggingExample() {
+  final logger = Logger(tag: 'TableDemo');
 
-  Future<Map<String, dynamic>> fetchUserData(String userId) async {
-    final stopwatch = Stopwatch()..start();
-    
-    // 🔍 Interactive request logging - expandable in browser console
-    logger.jsonDebug({
-      'method': 'GET',
-      'url': '/api/users/$userId',
-      'headers': {'Authorization': 'Bearer ...'},
-      'timestamp': DateTime.now().toIso8601String(),
-    }, label: '📤 API Request');
+  // Array of objects - most common use case
+  final users = [
+    {'id': 1, 'name': 'Alice', 'age': 25, 'city': 'Boston'},
+    {'id': 2, 'name': 'Bob', 'age': 30, 'city': 'Seattle'},
+    {'id': 3, 'name': 'Charlie', 'age': 35, 'city': 'Denver'},
+  ];
+  logger.tableInfo(users, label: 'User List');
 
-    try {
-      final response = await http.get(Uri.parse('/api/users/$userId'));
-      
-      // 🎯 Interactive response - click to explore in DevTools
-      logger.jsonInfo({
-        'status': response.statusCode,
-        'headers': response.headers,
-        'data': jsonDecode(response.body),
-        'duration': '${stopwatch.elapsedMilliseconds}ms',
-        'cached': response.headers['x-cache'] == 'HIT',
-      }, label: '📥 API Response');
+  // Single object - keys become rows
+  final config = {
+    'appName': 'MyApp',
+    'version': '1.2.0',
+    'environment': 'production',
+    'debug': false,
+  };
+  logger.tableInfo(config, label: 'App Configuration');
 
-      return jsonDecode(response.body);
-    } catch (e) {
-      // 🚨 Error context with full debugging info
-      logger.jsonError({
-        'error': e.toString(),
-        'url': '/api/users/$userId',
-        'duration': '${stopwatch.elapsedMilliseconds}ms',
-        'stackTrace': StackTrace.current.toString(),
-        'userAgent': window.navigator.userAgent,
-      }, label: '❌ API Error');
-      rethrow;
-    }
-  }
+  // Column filtering - show only specific columns
+  logger.tableInfo(
+    users,
+    columns: ['name', 'city'],
+    label: 'Users (Name & City Only)',
+  );
+
+  // Different log levels for tables
+  final metrics = [
+    {'metric': 'CPU Usage', 'value': '45%', 'status': 'OK'},
+    {'metric': 'Memory', 'value': '78%', 'status': 'Warning'},
+    {'metric': 'Disk Space', 'value': '92%', 'status': 'Critical'},
+  ];
+  logger.tableWarn(metrics, label: 'System Metrics');
+
+  // Array of arrays format
+  final matrix = [
+    ['Product', 'Price', 'Stock'],
+    ['Laptop', 999.99, 15],
+    ['Mouse', 29.99, 50],
+    ['Keyboard', 79.99, 25],
+  ];
+  logger.tableInfo(matrix, label: 'Product Inventory');
 }
 ```
 
-#### Web Performance Monitoring
+**Cross-Platform Table Output:**
 
-```dart
-class WebPerformanceLogger {
-  final logger = Logger(tag: 'PERF');
-
-  void logPageLoad() {
-    // 📊 Performance metrics table - uses console.table() in browser
-    final metrics = [
-      {'metric': 'First Contentful Paint', 'value': '1.2s', 'threshold': '1.8s'},
-      {'metric': 'Largest Contentful Paint', 'value': '2.1s', 'threshold': '2.5s'},
-      {'metric': 'First Input Delay', 'value': '45ms', 'threshold': '100ms'},
-    ];
-    
-    logger.table(metrics, label: '📈 Core Web Vitals');
-  }
-
-  void logUserInteraction(String action, Map<String, dynamic> context) {
-    // 🎯 Interactive user event logging
-    logger.jsonInfo({
-      'action': action,
-      'context': context,
-      'performance': {
-        'memory': window.performance.memory?.toJson(),
-        'navigation': window.performance.navigation?.toJson(),
-        'timing': window.performance.timing?.toJson(),
-      },
-      'viewport': {
-        'width': window.innerWidth,
-        'height': window.innerHeight,
-      }
-    }, label: '👤 User Interaction');
-  }
-}
-```
-
-#### Real-World Web App Logging
-
-```dart
-class WebAppLogger {
-  final logger = Logger(tag: 'WEB_APP');
-
-  void logUserSession() {
-    // 🌐 Complete web session context
-    logger.jsonInfo({
-      'session': {
-        'id': generateSessionId(),
-        'startTime': DateTime.now().toIso8601String(),
-        'user': getCurrentUser()?.toJson(),
-      },
-      'browser': {
-        'userAgent': window.navigator.userAgent,
-        'language': window.navigator.language,
-        'platform': window.navigator.platform,
-        'cookieEnabled': window.navigator.cookieEnabled,
-      },
-      'screen': {
-        'width': window.screen?.width,
-        'height': window.screen?.height,
-        'colorDepth': window.screen?.colorDepth,
-      },
-      'features': {
-        'localStorage': _hasLocalStorage(),
-        'sessionStorage': _hasSessionStorage(),
-        'webGL': _hasWebGL(),
-      }
-    }, label: '🚀 Web Session Started');
-  }
-}
-```
+- **🌐 Web**: Native `console.table()` with interactive, sortable columns
+- **🖥️ Desktop/IDE**: Beautiful ASCII tables with Unicode box-drawing characters
+- **📱 Mobile**: Clean formatted tables optimized for mobile screens
 
 ## ⚙️ Configuration Reference
 
 ### LoggerOptions Properties
 
+
 | Property           | Type        | Default      | Description                   | Example                       |
-| ------------------ | ----------- | ------------ | ----------------------------- | ----------------------------- |
+| -------------------- | ------------- | -------------- | ------------------------------- | ------------------------------- |
 | `enableLogging`    | `bool?`     | `true`       | Master switch for all logging | `false` to disable all logs   |
 | `enableColors`     | `bool?`     | `true`       | ANSI color codes in output    | `false` for plain text        |
 | `minLogLevel`      | `LogLevel?` | `debug`      | Minimum level to display      | `LogLevel.warn` for warnings+ |
@@ -568,8 +631,9 @@ class WebAppLogger {
 
 ### Logger Constructor Parameters
 
+
 | Parameter          | Type      | Description                    | Use Case                        |
-| ------------------ | --------- | ------------------------------ | ------------------------------- |
+| -------------------- | ----------- | -------------------------------- | --------------------------------- |
 | `tag`              | `String?` | Identifier for this logger     | `'API'`, `'Database'`, `'Auth'` |
 | `enableLogging`    | `bool?`   | Override global logging        | Critical loggers always on      |
 | `enableColors`     | `bool?`   | Override global colors         | Specific logger styling         |
@@ -578,8 +642,9 @@ class WebAppLogger {
 
 ### JSON Logging API
 
+
 | Method                         | Level        | Description              | Best For                     |
-| ------------------------------ | ------------ | ------------------------ | ---------------------------- |
+| -------------------------------- | -------------- | -------------------------- | ------------------------------ |
 | `json(object, {level, label})` | Configurable | Main JSON logging method | Custom log levels            |
 | `jsonDebug(object, {label})`   | Debug        | Development debugging    | Complex object inspection    |
 | `jsonInfo(object, {label})`    | Info         | General information      | API responses, state changes |
@@ -590,44 +655,60 @@ class WebAppLogger {
 
 Flutter Logger Pro includes powerful table formatting capabilities similar to `console.table` in JavaScript, perfect for displaying structured data in a readable format.
 
-| Method                                    | Level        | Description                    | Best For                        |
-| ----------------------------------------- | ------------ | ------------------------------ | ------------------------------- |
-| `table(data, {columns, level, label})`   | Configurable | Main table logging method      | Custom log levels               |
-| `tableDebug(data, {columns, label})`     | Debug        | Development debugging          | Data structure inspection       |
-| `tableInfo(data, {columns, label})`      | Info         | General information            | API responses, configuration    |
-| `tableWarn(data, {columns, label})`      | Warning      | Potential issues               | Performance metrics, warnings   |
-| `tableError(data, {columns, label})`     | Error        | Error conditions               | Error logs, failed operations   |
+
+| Method                                 | Level        | Description               | Best For                      |
+| ---------------------------------------- | -------------- | --------------------------- | ------------------------------- |
+| `table(data, {columns, level, label})` | Configurable | Main table logging method | Custom log levels             |
+| `tableDebug(data, {columns, label})`   | Debug        | Development debugging     | Data structure inspection     |
+| `tableInfo(data, {columns, label})`    | Info         | General information       | API responses, configuration  |
+| `tableWarn(data, {columns, label})`    | Warning      | Potential issues          | Performance metrics, warnings |
+| `tableError(data, {columns, label})`   | Error        | Error conditions          | Error logs, failed operations |
 
 #### Supported Data Formats
 
 **Array of Objects** - Each object becomes a row with keys as column headers:
+
 ```dart
 final users = [
-  {'id': 1, 'name': 'Alice', 'hobbies': ['Reading', 'Cycling']},
-  {'id': 2, 'name': 'Bob', 'hobbies': ['Running']},
+  {'id': 1, 'name': 'Alice', 'age': 25, 'city': 'Boston'},
+  {'id': 2, 'name': 'Bob', 'age': 30, 'city': 'Seattle'},
+  {'id': 3, 'name': 'Charlie', 'age': 35, 'city': 'Denver'},
 ];
-logger.table(users, label: 'User Data');
+logger.tableInfo(users, label: 'User List');
 ```
 
 **Single Object** - Keys become row indices, values in a "Values" column:
+
 ```dart
-final config = {'brand': 'Tesla', 'model': 'S', 'year': 2023};
-logger.table(config, label: 'Car Configuration');
+final config = {
+  'appName': 'MyApp',
+  'version': '1.2.0',
+  'environment': 'production',
+  'debug': false,
+};
+logger.tableInfo(config, label: 'App Configuration');
 ```
 
 **Array of Arrays** - Each inner array is a row with numeric column headers:
+
 ```dart
 final matrix = [
-  ['Name', 'Age', 'City'],
-  ['Alice', 25, 'Boston'],
-  ['Bob', 30, 'Seattle'],
+  ['Product', 'Price', 'Stock'],
+  ['Laptop', 999.99, 15],
+  ['Mouse', 29.99, 50],
+  ['Keyboard', 79.99, 25],
 ];
-logger.table(matrix, label: 'Data Matrix');
+logger.tableInfo(matrix, label: 'Product Inventory');
 ```
 
 **Column Filtering** - Display only specific columns:
+
 ```dart
-logger.table(users, columns: ['name', 'id'], label: 'Filtered Data');
+logger.tableInfo(
+  users,
+  columns: ['name', 'city'],
+  label: 'Users (Name & City Only)',
+);
 ```
 
 #### Platform-Specific Behavior
@@ -637,8 +718,9 @@ logger.table(users, columns: ['name', 'id'], label: 'Filtered Data');
 
 ### Message Template Variables
 
+
 | Variable         | Description        | Example Output   |
-| ---------------- | ------------------ | ---------------- |
+| ------------------ | -------------------- | ------------------ |
 | `{timestamp}`    | Current timestamp  | `14:30:25`       |
 | `{level}`        | Log level name     | `INFO`, `ERROR`  |
 | `{message}`      | The log message    | `User logged in` |
@@ -714,13 +796,16 @@ final myLogger = Logger(tag: 'MyClass');
 
 ## 🌍 Platform Support
 
-| Platform                            | Status              | Features                                    |
-| ----------------------------------- | ------------------- | ------------------------------------------- |
-| **🌐 Flutter Web**                  | ⭐ **Primary Focus** | Interactive console, console.table(), dual output |
-| **Flutter Mobile** (iOS/Android)    | ✅ Full Support     | Colors, JSON, ASCII tables, all features   |
-| **Flutter Desktop** (Win/Mac/Linux) | ✅ Full Support     | Native console output, ASCII tables        |
-| **Dart Server**                     | ✅ Full Support     | Perfect for backend logging, JSON output   |
-| **Dart CLI**                        | ✅ Full Support     | Command-line applications, colored output   |
+
+| Platform                            | Status              | Features                                          |
+| ------------------------------------- | --------------------- | --------------------------------------------------- |
+| **🌐 Flutter Web**                  | ⭐**Primary Focus** | Interactive console, console.table(), dual output |
+| **Flutter Mobile** (iOS/Android)    | ✅ Full Support     | Colors, JSON, ASCII tables, all features          |
+| **Flutter Desktop** (Win/Mac/Linux) | ✅ Full Support     | Native console output, ASCII tables               |
+| **Dart Server**                     | ✅ Full Support     | Perfect for backend logging, JSON output          |
+| **Dart CLI**                        | ✅ Full Support     | Command-line applications, colored output         |
+
+**📸 Visual Comparison**: See the [screenshots above](#-see-it-in-action) showing the difference between browser console (interactive) and IDE console (formatted text) output.
 
 ### 🌐 **Why Web-First?**
 
@@ -734,196 +819,193 @@ Flutter Logger Pro is designed with **web development as the primary platform** 
 
 ## 📚 Examples & Use Cases
 
-### 🌐 **Web-First Examples**
+### 🚀 **Real-World Examples**
 
-#### Flutter Web E-Commerce App
+Here are practical examples from our complete example app that demonstrate Flutter Logger Pro in action:
+
+#### 1. **API Service Logging**
 
 ```dart
-class WebECommerceLogger {
-  final _logger = Logger(tag: 'E_COMMERCE');
+/// API service with comprehensive logging
+void apiServiceExample() {
+  final apiLogger = Logger(tag: 'ApiService');
 
-  void logProductView(Product product) {
-    // 🛍️ Interactive product data - expandable in browser DevTools
-    _logger.jsonInfo({
-      'event': 'product_view',
-      'product': {
-        'id': product.id,
-        'name': product.name,
-        'price': product.price,
-        'category': product.category,
-        'inStock': product.inventory > 0,
-      },
-      'user': getCurrentUser()?.toAnalyticsJson(),
-      'session': {
-        'id': getSessionId(),
-        'pageViews': getPageViewCount(),
-        'timeOnSite': getTimeOnSite(),
-      },
-      'context': {
-        'referrer': window.document.referrer,
-        'url': window.location.href,
-        'timestamp': DateTime.now().toIso8601String(),
-      }
-    }, label: '👁️ Product View Event');
-  }
+  apiLogger.info('🌐 Making API request to /users');
 
-  void logPurchaseFlow(List<CartItem> items) {
-    // 📊 Purchase analytics table - uses console.table() in browser
-    final purchaseData = items.map((item) => {
-      'productId': item.product.id,
-      'name': item.product.name,
-      'quantity': item.quantity,
-      'unitPrice': item.product.price,
-      'totalPrice': item.quantity * item.product.price,
-      'category': item.product.category,
-    }).toList();
+  // Log request details
+  final requestData = {
+    'method': 'GET',
+    'url': '/api/users',
+    'headers': {'Authorization': 'Bearer token123'},
+    'timestamp': DateTime.now().toIso8601String(),
+  };
+  apiLogger.jsonDebug(requestData, label: 'Request Details');
 
-    _logger.table(purchaseData, label: '🛒 Purchase Items');
-    
-    // 💰 Purchase summary
-    _logger.jsonInfo({
-      'event': 'purchase_initiated',
-      'summary': {
-        'itemCount': items.length,
-        'totalValue': items.fold(0.0, (sum, item) => sum + (item.quantity * item.product.price)),
-        'categories': items.map((item) => item.product.category).toSet().toList(),
-      },
-      'paymentMethod': getSelectedPaymentMethod(),
-      'shippingAddress': getShippingAddress()?.toJson(),
-    }, label: '💳 Purchase Summary');
+  // Simulate response
+  final responseData = {
+    'status': 200,
+    'data': [
+      {'id': 1, 'name': 'Alice'},
+      {'id': 2, 'name': 'Bob'},
+    ],
+    'duration': '150ms',
+  };
+  apiLogger.jsonInfo(responseData, label: 'API Response');
+}
+```
+
+#### 2. **User Authentication Flow**
+
+```dart
+/// User authentication flow with logging
+void authenticationExample() {
+  final authLogger = Logger(tag: 'Auth');
+
+  authLogger.info('🔐 User login attempt');
+
+  // Log login attempt
+  final loginData = {
+    'email': 'user@example.com',
+    'timestamp': DateTime.now().toIso8601String(),
+    'ipAddress': '192.168.1.100',
+    'userAgent': 'Flutter Web App',
+  };
+  authLogger.jsonDebug(loginData, label: 'Login Attempt');
+
+  // Success case
+  authLogger.info('✅ User authenticated successfully');
+
+  // Log user session
+  final sessionInfo = {
+    'userId': 123,
+    'sessionId': 'sess_abc123',
+    'expiresAt': DateTime.now().add(Duration(hours: 24)).toIso8601String(),
+    'permissions': ['read', 'write'],
+  };
+  authLogger.jsonInfo(sessionInfo, label: 'User Session Created');
+}
+```
+
+#### 3. **Error Handling with Context**
+
+```dart
+/// Error handling with comprehensive logging
+void errorHandlingExample() {
+  final errorLogger = Logger(tag: 'ErrorHandler');
+
+  try {
+    // Simulate an error
+    throw Exception('Database connection failed');
+  } catch (e, stackTrace) {
+    // Log comprehensive error information
+    final errorContext = {
+      'error': e.toString(),
+      'type': e.runtimeType.toString(),
+      'timestamp': DateTime.now().toIso8601String(),
+      'context': {'operation': 'fetchUserData', 'userId': 123, 'retryCount': 2},
+      'stackTrace': stackTrace.toString().split('\n').take(5).toList(),
+    };
+
+    errorLogger.jsonError(errorContext, label: 'Database Error');
+    errorLogger.error('❌ Operation failed: ${e.toString()}');
   }
 }
 ```
 
-#### Web Analytics & User Behavior
+#### 4. **Performance Monitoring**
 
 ```dart
-class WebAnalyticsLogger {
-  final _logger = Logger(tag: 'ANALYTICS');
+/// Performance monitoring example
+void performanceExample() {
+  final perfLogger = Logger(tag: 'Performance');
 
-  void logUserJourney() {
-    // 🗺️ User journey tracking with interactive timeline
-    final journeyData = getUserJourneySteps().map((step) => {
-      'timestamp': step.timestamp.toIso8601String(),
-      'page': step.pageName,
-      'action': step.action,
-      'duration': '${step.duration.inSeconds}s',
-      'exitIntent': step.hasExitIntent,
-    }).toList();
+  // Track operation timing
+  final stopwatch = Stopwatch()..start();
 
-    _logger.table(journeyData, 
-      columns: ['timestamp', 'page', 'action', 'duration'],
-      label: '🗺️ User Journey'
-    );
-  }
+  // Simulate some work
+  Future.delayed(Duration(milliseconds: 100));
 
-  void logPerformanceMetrics() {
-    // ⚡ Real-time performance monitoring
-    _logger.jsonWarn({
-      'performance': {
-        'loadTime': getPageLoadTime(),
-        'renderTime': getRenderTime(),
-        'interactiveTime': getTimeToInteractive(),
-        'memoryUsage': getMemoryUsage(),
-      },
-      'vitals': {
-        'fcp': getFirstContentfulPaint(),
-        'lcp': getLargestContentfulPaint(),
-        'fid': getFirstInputDelay(),
-        'cls': getCumulativeLayoutShift(),
-      },
-      'resources': getResourceTimings().map((r) => {
-        'name': r.name,
-        'duration': '${r.duration}ms',
-        'size': '${r.transferSize} bytes',
-      }).toList(),
-    }, label: '📊 Performance Metrics');
-  }
+  stopwatch.stop();
+
+  // Log performance metrics
+  final metrics = [
+    {
+      'operation': 'dataLoad',
+      'duration': '${stopwatch.elapsedMilliseconds}ms',
+      'status': 'success',
+    },
+    {'operation': 'renderUI', 'duration': '45ms', 'status': 'success'},
+    {'operation': 'apiCall', 'duration': '230ms', 'status': 'timeout'},
+  ];
+
+  perfLogger.tableInfo(metrics, label: 'Operation Performance');
+
+  // Memory usage
+  final memoryInfo = {
+    'heapUsed': '45MB',
+    'heapTotal': '128MB',
+    'external': '12MB',
+    'timestamp': DateTime.now().toIso8601String(),
+  };
+
+  perfLogger.jsonInfo(memoryInfo, label: 'Memory Usage');
 }
 ```
 
-#### Web API Integration Debugging
+### 🎯 **Complete Example - All Features**
+
+Here's the complete example that demonstrates all Flutter Logger Pro features working together:
 
 ```dart
-class WebApiDebugger {
-  final _logger = Logger(tag: 'API_DEBUG');
+import 'package:flutter_logger_pro/flutter_logger_pro.dart';
 
-  Future<void> debugApiCall(String endpoint, Map<String, dynamic> payload) async {
-    final requestId = generateRequestId();
-    final stopwatch = Stopwatch()..start();
+/// 🌐 Flutter Logger Pro - Complete Examples
+///
+/// This example demonstrates all features of Flutter Logger Pro:
+/// - Basic logging with different levels
+/// - Interactive JSON logging (cross-platform optimized)
+/// - Table logging with automatic platform adaptation
+/// - Global configuration options
+/// - Real-world use cases
+///
+/// 🚀 Works beautifully on Web, Mobile, Desktop, and Server!
+void main() {
+  // Configure logger for optimal experience
+  LoggerOptions.instance.configure(
+    enableLogging: true,
+    enableColors: true,
+    minLogLevel: LogLevel.debug,
+    includeTimestamp: true,
+    showFunctionName: true,
+  );
 
-    // 📤 Request logging with full context
-    _logger.jsonDebug({
-      'requestId': requestId,
-      'endpoint': endpoint,
-      'method': 'POST',
-      'headers': {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${getAuthToken()}',
-        'X-Request-ID': requestId,
-      },
-      'payload': payload,
-      'browser': {
-        'userAgent': window.navigator.userAgent,
-        'language': window.navigator.language,
-      },
-      'network': {
-        'connection': getNetworkInfo(),
-        'online': window.navigator.onLine,
-      }
-    }, label: '📤 API Request Debug');
+  // Run all examples
+  basicLoggingExample();
+  jsonLoggingExample();
+  tableLoggingExample();
+  configurationExample();
+  realWorldExamples();
+}
 
-    try {
-      final response = await makeApiCall(endpoint, payload);
-      
-      // 📥 Success response with performance data
-      _logger.jsonInfo({
-        'requestId': requestId,
-        'status': response.statusCode,
-        'headers': response.headers,
-        'data': response.data,
-        'performance': {
-          'duration': '${stopwatch.elapsedMilliseconds}ms',
-          'size': '${response.data.toString().length} chars',
-          'cached': response.headers['x-cache-status'],
-        },
-        'rateLimit': {
-          'remaining': response.headers['x-ratelimit-remaining'],
-          'reset': response.headers['x-ratelimit-reset'],
-        }
-      }, label: '✅ API Success');
+/// Run all real-world examples
+void realWorldExamples() {
+  // Use case 1: API Service Logging
+  apiServiceExample();
 
-    } catch (error) {
-      // 🚨 Comprehensive error logging
-      _logger.jsonError({
-        'requestId': requestId,
-        'error': {
-          'type': error.runtimeType.toString(),
-          'message': error.toString(),
-          'statusCode': error.statusCode,
-        },
-        'context': {
-          'endpoint': endpoint,
-          'payload': payload,
-          'duration': '${stopwatch.elapsedMilliseconds}ms',
-          'retryCount': getRetryCount(requestId),
-        },
-        'debugging': {
-          'stackTrace': StackTrace.current.toString(),
-          'timestamp': DateTime.now().toIso8601String(),
-          'sessionId': getSessionId(),
-        }
-      }, label: '❌ API Error Debug');
-      
-      rethrow;
-    }
-  }
+  // Use case 2: User Authentication
+  authenticationExample();
+
+  // Use case 3: Error Handling
+  errorHandlingExample();
+
+  // Use case 4: Performance Monitoring
+  performanceExample();
 }
 ```
 
-### 🖥️ **Cross-Platform Examples**
+### 🔄 **Service Layer Integration**
 
-#### Service Layer Logging
+Perfect for integrating with your existing service architecture:
 
 ```dart
 class UserService {
@@ -942,11 +1024,7 @@ class UserService {
     }
   }
 }
-```
 
-#### State Management Debugging
-
-```dart
 class CounterBloc extends Bloc<CounterEvent, CounterState> {
   final _logger = Logger(tag: 'CounterBloc');
 
@@ -963,86 +1041,146 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
 }
 ```
 
-## 🌐 **Web-Specific Features**
+### Configuration Examples
 
-### Browser Console Integration
-
-Flutter Logger Pro provides seamless integration with browser developer tools:
+Flutter Logger Pro offers flexible configuration options that work across all platforms:
 
 ```dart
-// 🔍 Interactive object exploration
-logger.json(complexApiResponse, label: 'API Data');
-// Result: Expandable object tree in browser console
+void configurationExample() {
+  // Global configuration - affects all new loggers
+  LoggerOptions.instance.configure(
+    enableLogging: true,
+    enableColors: true,
+    minLogLevel: LogLevel.info, // Only info and above
+    includeTimestamp: true,
+    dateTimeFormat: 'HH:mm:ss',
+    showFunctionName: true,
+    showLocation: false,
+  );
 
-// 📊 Native table rendering  
-logger.table(userAnalytics, label: 'User Metrics');
-// Result: Native console.table() with sortable columns
+  final globalLogger = Logger(tag: 'Global');
+  globalLogger.debug('This debug message won\'t show (filtered by minLogLevel)');
+  globalLogger.info('This info message will show');
 
-// 🎯 Dual output logging
-logger.info('Processing user data...');
-// Result: Appears in BOTH browser console AND IDE debug console
-```
+  // Per-instance overrides
+  final debugLogger = Logger(
+    tag: 'Debug',
+    enableColors: false, // Override global setting
+    showLocation: true,  // Override global setting
+  );
+  debugLogger.info('Custom logger with different settings');
 
-### Web Performance Monitoring
+  // Different message template
+  LoggerOptions.instance.configure(
+    messageTemplate: '[{timestamp}] {level} | {tag} | {message}',
+  );
 
-Built-in support for web performance APIs:
-
-```dart
-class WebPerformanceLogger {
-  final logger = Logger(tag: 'PERF');
-
-  void logWebVitals() {
-    logger.table([
-      {'metric': 'FCP', 'value': '${performance.getEntriesByName('first-contentful-paint').first.startTime}ms'},
-      {'metric': 'LCP', 'value': '${getLargestContentfulPaint()}ms'},
-      {'metric': 'FID', 'value': '${getFirstInputDelay()}ms'},
-    ], label: 'Core Web Vitals');
-  }
+  final customLogger = Logger(tag: 'Custom');
+  customLogger.info('Message with custom template');
 }
 ```
 
-### Browser-Specific Debugging
+## 🔧 **Platform-Adaptive Features**
+
+Flutter Logger Pro automatically adapts its output format based on the platform for optimal debugging experience:
+
+### Smart Platform Detection
 
 ```dart
-// 🌐 Browser environment detection
-logger.jsonInfo({
-  'browser': window.navigator.userAgent,
-  'viewport': {'width': window.innerWidth, 'height': window.innerHeight},
-  'connection': navigator.connection?.effectiveType,
-  'memory': performance.memory?.usedJSHeapSize,
-}, label: 'Browser Context');
+void platformAdaptiveExample() {
+  final logger = Logger(tag: 'Adaptive');
+
+  // This works beautifully on all platforms:
+  // - Web: Interactive browser console with expandable objects
+  // - Mobile: Colored console output optimized for mobile debugging
+  // - Desktop: Rich terminal output with full color support
+  // - Server: Clean structured logs perfect for production monitoring
+
+  logger.jsonInfo({
+    'platform': 'auto-detected',
+    'features': ['colors', 'json', 'tables', 'timestamps'],
+    'optimized': true,
+  }, label: 'Platform Info');
+
+  // Table logging adapts automatically:
+  // - Web: Native console.table() with sorting and filtering
+  // - Native: Beautiful ASCII tables with Unicode characters
+  final data = [
+    {'feature': 'JSON Logging', 'web': '✅', 'mobile': '✅', 'desktop': '✅'},
+    {'feature': 'Table Logging', 'web': '✅', 'mobile': '✅', 'desktop': '✅'},
+    {'feature': 'Color Output', 'web': '✅', 'mobile': '✅', 'desktop': '✅'},
+  ];
+  logger.tableInfo(data, label: 'Feature Support Matrix');
+}
 ```
 
 ## 🚀 **Getting Started with Web Development**
 
+### Complete Example - All Features
+
+Here's the complete example from our example app that demonstrates all features:
+
+```dart
+import 'package:flutter_logger_pro/flutter_logger_pro.dart';
+
+/// 🌐 Flutter Logger Pro - Complete Examples
+///
+/// This example demonstrates all features of Flutter Logger Pro:
+/// - Basic logging with different levels
+/// - Interactive JSON logging (web-optimized)
+/// - Table logging with console.table() support
+/// - Global configuration options
+/// - Real-world use cases
+///
+/// 🚀 Run this in Flutter Web and open DevTools (F12) to see interactive logging!
+void main() {
+  // Configure logger for optimal experience
+  LoggerOptions.instance.configure(
+    enableLogging: true,
+    enableColors: true,
+    minLogLevel: LogLevel.debug,
+    includeTimestamp: true,
+    showFunctionName: true,
+  );
+
+  // Run all examples
+  basicLoggingExample();
+  jsonLoggingExample();
+  tableLoggingExample();
+  configurationExample();
+  realWorldExamples();
+}
+```
+
 ### Quick Web Setup
 
 1. **Create a new Flutter Web project**:
+
    ```bash
    flutter create my_web_app
    cd my_web_app
    ```
-
 2. **Add Flutter Logger Pro**:
+
    ```yaml
    dependencies:
      flutter:
        sdk: flutter
      flutter_logger_pro: ^0.0.1
    ```
-
 3. **Start logging**:
+
    ```dart
    import 'package:flutter_logger_pro/flutter_logger_pro.dart';
-   
+
    void main() {
      final logger = Logger(tag: 'WebApp');
      logger.info('🌐 Web app started!');
      runApp(MyApp());
    }
    ```
-
 4. **Run and debug**:
+
    ```bash
    flutter run -d chrome
    # Open DevTools (F12) to see interactive logs!
@@ -1051,7 +1189,7 @@ logger.jsonInfo({
 ### Web Development Workflow
 
 1. **🔧 Development**: Use `logger.debug()` and `logger.json()` for detailed debugging
-2. **🧪 Testing**: Use `logger.table()` to visualize test data and results  
+2. **🧪 Testing**: Use `logger.table()` to visualize test data and results
 3. **📊 Monitoring**: Use `logger.jsonInfo()` for performance and analytics tracking
 4. **🚨 Error Handling**: Use `logger.jsonError()` for comprehensive error context
 
@@ -1060,7 +1198,7 @@ logger.jsonInfo({
 We welcome contributions! Here's how you can help:
 
 - 🐛 **Report bugs** by opening an issue
-- 💡 **Suggest features** for new functionality  
+- 💡 **Suggest features** for new functionality
 - 📖 **Improve documentation** with better examples
 - 🔧 **Submit pull requests** for bug fixes or features
 - 🌐 **Web-specific improvements** are especially welcome!
@@ -1089,7 +1227,6 @@ flutter run -d chrome
 # - Native console.table() rendering
 # - Dual-output logging
 ```
-
 
 ## 📄 License
 
@@ -1144,18 +1281,21 @@ flutter build web --release
 ## 🎯 **Why Choose Flutter Logger Pro?**
 
 ### ✅ **Perfect for Web Development**
+
 - **Interactive Debugging**: Click and explore objects in browser DevTools
 - **Native Integration**: Uses browser's console.table() and object inspection
 - **Dual Output**: See logs in both browser and IDE simultaneously
 - **Zero Config**: Works perfectly out-of-the-box
 
 ### ✅ **Production Ready**
+
 - **Performance Optimized**: Lazy evaluation and minimal overhead
 - **Configurable**: Fine-tune logging for different environments
 - **Cross-Platform**: Same API works on web, mobile, desktop, and server
 - **Reliable**: Comprehensive error handling and fallbacks
 
 ### ✅ **Developer Experience**
+
 - **Intuitive API**: Simple, consistent methods across all platforms
 - **Rich Documentation**: Comprehensive examples and use cases
 - **Active Development**: Regular updates and improvements
@@ -1166,8 +1306,5 @@ flutter build web --release
 **🌐 Made with ❤️ for the modern web-first Flutter development community**
 
 *Flutter Logger Pro - Where logging meets the web! 🚀*
- 
- 
-#   f l u t t e r _ l o g g e r _ p r o 
- 
- 
+
+# f l u t t e r _ l o g g e r _ p r o
