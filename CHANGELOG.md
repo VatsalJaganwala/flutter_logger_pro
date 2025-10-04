@@ -5,6 +5,49 @@ All notable changes to Logger Plus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### ✨ Added
+
+#### LoggerOptions Static Methods & Individual Property Setters
+
+- **Static Configuration Methods**: Added `LoggerOptions.configure()` and `LoggerOptions.reset()` static methods for cleaner API usage
+- **Individual Property Setters**: Added static methods for updating specific configuration properties:
+  - `LoggerOptions.setEnableLogging(bool)`
+  - `LoggerOptions.setEnableColors(bool)`
+  - `LoggerOptions.setMinLogLevel(LogLevel)`
+  - `LoggerOptions.setShowFunctionName(bool)`
+  - `LoggerOptions.setShowLocation(bool)`
+  - `LoggerOptions.setIncludeTimestamp(bool)`
+  - `LoggerOptions.setDateTimeFormat(String)`
+  - `LoggerOptions.setMessageTemplate(String)`
+
+#### Logger Instance Configuration Methods
+
+- **Per-Instance Configuration**: Added `logger.configure()` method for updating multiple local settings at once
+- **Per-Instance Reset**: Added `logger.reset()` method to reset logger to global defaults
+- **Individual Instance Setters**: Added methods for updating specific logger instance properties:
+  - `logger.setEnableLogging(bool)`
+  - `logger.setEnableColors(bool)`
+  - `logger.setShowFunctionName(bool)`
+  - `logger.setShowLocation(bool)`
+
+### 🔄 Changed
+
+#### API Improvements
+
+- **Simplified Global Configuration**: Users can now call `LoggerOptions.configure()` directly instead of `LoggerOptions.instance.configure()`
+- **Granular Global Updates**: Individual property setters allow updating specific global settings without full reconfiguration
+- **Per-Instance Configuration**: Logger instances now support local configuration that overrides global settings
+- **Flexible Configuration Levels**: Three levels of configuration hierarchy: global defaults → constructor parameters → runtime instance methods
+- **Backward Compatibility**: All existing instance methods remain functional for backward compatibility
+
+### 📚 Documentation
+
+- **Updated Examples**: All documentation examples now use the new static methods
+- **API Reference**: Added comprehensive documentation for new static methods and individual property setters
+- **Usage Patterns**: Added examples showing both bulk configuration and individual property updates
+
 ## [0.0.2] - 2024-10-02
 
 ### 🔧 Fixed

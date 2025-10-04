@@ -11,8 +11,8 @@ import 'package:flutter_logger_pro/flutter_logger_pro.dart';
 ///
 /// 🚀 Run this in Flutter Web and open DevTools (F12) to see interactive logging!
 void main() {
-  // Configure logger for optimal experience
-  LoggerOptions.instance.configure(
+  // Configure logger for optimal experience (using new static method)
+  LoggerOptions.configure(
     enableLogging: true,
     enableColors: true,
     minLogLevel: LogLevel.debug,
@@ -21,11 +21,11 @@ void main() {
   );
 
   // Run all examples
-  // basicLoggingExample();
-  // jsonLoggingExample();
+  basicLoggingExample();
+  jsonLoggingExample();
   tableLoggingExample();
-  // configurationExample();
-  // realWorldExamples();
+  configurationExample();
+  realWorldExamples();
 }
 
 /// Example 1: Basic Logging
@@ -137,8 +137,8 @@ void tableLoggingExample() {
 /// Example 4: Configuration Options
 /// Shows how to configure logging globally and per-instance
 void configurationExample() {
-  // Global configuration - affects all new loggers
-  LoggerOptions.instance.configure(
+  // Global configuration - affects all new loggers (using new static method)
+  LoggerOptions.configure(
     enableLogging: true,
     enableColors: true,
     minLogLevel: LogLevel.info, // Only info and above
@@ -162,13 +162,30 @@ void configurationExample() {
   );
   debugLogger.info('Custom logger with different settings');
 
-  // Different message template
-  LoggerOptions.instance.configure(
-    messageTemplate: '[{timestamp}] {level} | {tag} | {message}',
-  );
+  // Different message template (using individual setter)
+  LoggerOptions.setMessageTemplate('[{timestamp}] {level} | {tag} | {message}');
 
   final customLogger = Logger(tag: 'Custom');
   customLogger.info('Message with custom template');
+  
+  // Demonstrate per-instance configuration
+  final instanceLogger = Logger(tag: 'Instance');
+  
+  // Configure this specific logger instance
+  instanceLogger.configure(
+    enableColors: false,
+    showLocation: true,
+  );
+  instanceLogger.info('Logger with custom instance settings');
+  
+  // Individual setters for this logger
+  instanceLogger.setEnableColors(true);
+  instanceLogger.setShowFunctionName(false);
+  instanceLogger.info('Updated with individual setters');
+  
+  // Reset to global defaults
+  instanceLogger.reset();
+  instanceLogger.info('Reset to global defaults');
 }
 
 /// Example 5: Real-World Use Cases

@@ -8,11 +8,11 @@ import 'stack_trace_parser.dart';
 class Logger {
   final String? className;
   final String? tag;
-  final bool enableColors;
-  final bool enableLogging;
+  bool enableColors;
+  bool enableLogging;
   final bool showClassName;
-  final bool showFunctionName;
-  final bool showLocation;
+  bool showFunctionName;
+  bool showLocation;
 
   /// Creates a new Logger instance
   ///
@@ -127,6 +127,62 @@ class Logger {
   /// Convenience method to log table at error level
   void tableError(Object? data, {List<String>? columns, String? label}) =>
       table(data, columns: columns, level: LogLevel.error, label: label);
+
+  // Local logger configuration methods
+
+  /// Configure multiple local logger settings at once
+  ///
+  /// Updates the settings for this specific logger instance without affecting
+  /// global settings or other logger instances.
+  ///
+  /// [enableColors] - Whether to use ANSI colors in output for this logger
+  /// [enableLogging] - Whether logging is enabled for this logger instance
+  /// [showFunctionName] - Whether to show function names in output for this logger
+  /// [showLocation] - Whether to show file location in output for this logger
+  void configure({
+    bool? enableColors,
+    bool? enableLogging,
+    bool? showFunctionName,
+    bool? showLocation,
+  }) {
+    if (enableColors != null) this.enableColors = enableColors;
+    if (enableLogging != null) this.enableLogging = enableLogging;
+    if (showFunctionName != null) this.showFunctionName = showFunctionName;
+    if (showLocation != null) this.showLocation = showLocation;
+  }
+
+  /// Reset this logger's local settings to use global defaults
+  ///
+  /// This will cause the logger to inherit all settings from LoggerOptions
+  /// global configuration.
+  void reset() {
+    enableColors = LoggerOptions.instance.effectiveEnableColors;
+    enableLogging = LoggerOptions.instance.effectiveEnableLogging;
+    showFunctionName = LoggerOptions.instance.effectiveShowFunctionName;
+    showLocation = LoggerOptions.instance.effectiveShowLocation;
+  }
+
+  // Individual property setters for local logger configuration
+
+  /// Set whether to use ANSI colors in output for this logger
+  void setEnableColors(bool enable) {
+    enableColors = enable;
+  }
+
+  /// Set whether logging is enabled for this logger instance
+  void setEnableLogging(bool enable) {
+    enableLogging = enable;
+  }
+
+  /// Set whether to show function names in output for this logger
+  void setShowFunctionName(bool show) {
+    showFunctionName = show;
+  }
+
+  /// Set whether to show file location in output for this logger
+  void setShowLocation(bool show) {
+    showLocation = show;
+  }
 
   /// Internal logging method that handles formatting and output
   void _log(LogLevel level, String message) {

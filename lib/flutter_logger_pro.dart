@@ -20,8 +20,8 @@
 /// import 'package:flutter_logger_pro/flutter_logger_pro.dart';
 ///
 /// void main() {
-///   // Configure for optimal web experience
-///   LoggerOptions.instance.configure(
+///   // Configure for optimal web experience (using new static method)
+///   LoggerOptions.configure(
 ///     enableColors: true,
 ///     minLogLevel: LogLevel.debug,
 ///     includeTimestamp: true,

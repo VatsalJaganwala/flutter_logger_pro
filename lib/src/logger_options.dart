@@ -61,7 +61,31 @@ class LoggerOptions {
   ///
   /// Throws [LoggerConfigurationException] if validation fails.
   /// Logs warnings for invalid configurations that can be gracefully handled.
-  void configure({
+  static void configure({
+    bool? enableLogging,
+    bool? enableColors,
+    LogLevel? minLogLevel,
+    // bool? showClassName, // Hidden for future release
+    bool? showFunctionName,
+    bool? showLocation,
+    bool? includeTimestamp,
+    String? dateTimeFormat,
+    String? messageTemplate,
+  }) {
+    instance._configure(
+      enableLogging: enableLogging,
+      enableColors: enableColors,
+      minLogLevel: minLogLevel,
+      showFunctionName: showFunctionName,
+      showLocation: showLocation,
+      includeTimestamp: includeTimestamp,
+      dateTimeFormat: dateTimeFormat,
+      messageTemplate: messageTemplate,
+    );
+  }
+
+  /// Internal configure method used by both static and instance methods
+  void _configure({
     bool? enableLogging,
     bool? enableColors,
     LogLevel? minLogLevel,
@@ -113,10 +137,47 @@ class LoggerOptions {
     if (includeTimestamp != null) this.includeTimestamp = includeTimestamp;
   }
 
+  /// Instance method for backward compatibility
+  ///
+  /// Delegates to the internal _configure method.
+  void configureInstance({
+    bool? enableLogging,
+    bool? enableColors,
+    LogLevel? minLogLevel,
+    bool? showFunctionName,
+    bool? showLocation,
+    bool? includeTimestamp,
+    String? dateTimeFormat,
+    String? messageTemplate,
+  }) {
+    _configure(
+      enableLogging: enableLogging,
+      enableColors: enableColors,
+      minLogLevel: minLogLevel,
+      showFunctionName: showFunctionName,
+      showLocation: showLocation,
+      includeTimestamp: includeTimestamp,
+      dateTimeFormat: dateTimeFormat,
+      messageTemplate: messageTemplate,
+    );
+  }
+
+  /// Instance method for backward compatibility
+  ///
+  /// Delegates to the internal _reset method.
+  void resetInstance() {
+    _reset();
+  }
+
   /// Reset all configuration options to their default values (null)
   ///
   /// This will cause all effective getters to return their built-in defaults.
-  void reset() {
+  static void reset() {
+    instance._reset();
+  }
+
+  /// Internal reset method used by both static and instance methods
+  void _reset() {
     enableLogging = null;
     enableColors = null;
     minLogLevel = null;
@@ -167,6 +228,71 @@ class LoggerOptions {
 
   /// Gets the effective messageTemplate setting (default: null for built-in formatting)
   String? get effectiveMessageTemplate => messageTemplate;
+
+  // Static property setters for individual configuration updates
+
+  /// Set the global enable/disable switch for all logging
+  static void setEnableLogging(bool enable) {
+    instance.enableLogging = enable;
+  }
+
+  /// Set the global enable/disable switch for ANSI color output
+  static void setEnableColors(bool enable) {
+    instance.enableColors = enable;
+  }
+
+  /// Set the minimum log level to output globally
+  ///
+  /// Throws [LoggerConfigurationException] if the LogLevel is invalid.
+  static void setMinLogLevel(LogLevel level) {
+    instance._validateLogLevel(level);
+    instance.minLogLevel = level;
+  }
+
+  /// Set whether to show function names in log output
+  static void setShowFunctionName(bool show) {
+    instance.showFunctionName = show;
+  }
+
+  /// Set whether to show file location information in log output
+  static void setShowLocation(bool show) {
+    instance.showLocation = show;
+  }
+
+  /// Set whether to include timestamps in log messages
+  static void setIncludeTimestamp(bool include) {
+    instance.includeTimestamp = include;
+  }
+
+  /// Set custom date/time format string for timestamps
+  ///
+  /// Logs warnings for invalid formats and uses default format as fallback.
+  static void setDateTimeFormat(String format) {
+    if (instance._validateDateTimeFormat(format)) {
+      instance.dateTimeFormat = format;
+    } else {
+      // Log warning and use default format
+      instance._logWarning(
+        'Invalid dateTimeFormat "$format", using default format',
+      );
+      instance.dateTimeFormat = null; // Will use default 'HH:mm:ss'
+    }
+  }
+
+  /// Set custom message template for log formatting
+  ///
+  /// Logs warnings for potentially problematic templates but still applies them.
+  static void setMessageTemplate(String template) {
+    if (instance._validateMessageTemplate(template)) {
+      instance.messageTemplate = template;
+    } else {
+      // Log warning but still set the template - OutputFormatter will handle graceful degradation
+      instance._logWarning(
+        'Invalid messageTemplate "$template", may cause formatting issues',
+      );
+      instance.messageTemplate = template;
+    }
+  }
 
   // Private validation methods
 

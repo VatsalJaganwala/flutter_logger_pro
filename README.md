@@ -12,16 +12,6 @@ Flutter Logger Pro is built with **web development as the primary focus**, offer
 - **⚡ Zero Configuration**: Works perfectly out-of-the-box in Flutter Web projects
 - **🛠️ Developer Tools Integration**: Seamless integration with browser developer tools
 
-### 📸 **See It In Action**
-
-Flutter Logger Pro provides beautiful, dual-output logging that works seamlessly across platforms:
-
-| 🌐**Browser Console**                                        | 🖥️**IDE Console**                                  |
-| -------------------------------------------------------------- | ------------------------------------------------------ |
-| ![Browser Console](example/assets/basic_logging_browser.png) | ![IDE Console](example/assets/basic_logging_ide.png) |
-| Interactive, expandable objects                              | Clean, formatted text output                         |
-| Native DevTools integration                                  | Perfect for development debugging                    |
-
 ## 📋 Table of Contents
 
 - [✨ Key Features & Platform Support](#-key-features--platform-support)
@@ -58,7 +48,6 @@ Flutter Logger Pro provides beautiful, dual-output logging that works seamlessly
 | **Dart Server**                     | ✅ Full Support     | Perfect for backend logging, JSON output          |
 | **Dart CLI**                        | ✅ Full Support     | Command-line applications, colored output         |
 
-**📸 Visual Comparison**: See the [screenshots above](#-see-it-in-action) showing the difference between browser console (interactive) and IDE console (formatted text) output.
 
 ## 🚀 Quick Start
 
@@ -90,8 +79,8 @@ dev_dependencies:
 import 'package:flutter_logger_pro/flutter_logger_pro.dart';
 
 void main() {
-  // Configure for optimal web experience
-  LoggerOptions.instance.configure(
+  // Configure for optimal web experience (new static method)
+  LoggerOptions.configure(
     enableLogging: true,
     enableColors: true,
     minLogLevel: LogLevel.debug,
@@ -272,7 +261,6 @@ void tableLoggingExample() {
 
 
 ![](example/assets/20251004_160202_image.png)
-
 ![](example/assets/20251004_160235_image.png)
 
 #### Supported Data Formats
@@ -497,8 +485,8 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
 
 ```dart
 void configurationExample() {
-  // Global configuration - affects all new loggers
-  LoggerOptions.instance.configure(
+  // Global configuration - affects all new loggers (new static method)
+  LoggerOptions.configure(
     enableLogging: true,
     enableColors: true,
     minLogLevel: LogLevel.info, // Only info and above
@@ -520,6 +508,53 @@ void configurationExample() {
   );
   debugLogger.info('Custom logger with different settings');
 }
+
+// Per-instance configuration - update settings for specific logger instances
+void perInstanceConfigurationExample() {
+  final logger = Logger(tag: 'MyService');
+  
+  // Configure multiple settings for this specific logger
+  logger.configure(
+    enableColors: false,
+    showLocation: true,
+    showFunctionName: false,
+  );
+  
+  // Individual property setters for this logger
+  logger.setEnableLogging(true);
+  logger.setEnableColors(true);
+  
+  logger.info('This logger has custom local settings');
+  
+  // Reset this logger to use global defaults
+  logger.reset();
+  logger.info('Now using global settings again');
+}
+
+// Individual property setters - update specific settings without full reconfiguration
+void individualPropertyExample() {
+  // Set individual properties using static methods
+  LoggerOptions.setEnableLogging(true);
+  LoggerOptions.setEnableColors(false);
+  LoggerOptions.setMinLogLevel(LogLevel.warn);
+  LoggerOptions.setIncludeTimestamp(true);
+  LoggerOptions.setDateTimeFormat('yyyy-MM-dd HH:mm:ss');
+  LoggerOptions.setShowFunctionName(false);
+  LoggerOptions.setShowLocation(true);
+  LoggerOptions.setMessageTemplate('{level}: {message}');
+
+  final logger = Logger(tag: 'Individual');
+  logger.warn('Configuration updated using individual setters');
+}
+
+// Reset configuration to defaults
+void resetExample() {
+  // Reset all settings to defaults using static method
+  LoggerOptions.reset();
+  
+  final logger = Logger(tag: 'Reset');
+  logger.info('All settings reset to defaults');
+}
 ```
 
 ### Custom Message Templates
@@ -527,20 +562,20 @@ void configurationExample() {
 Create your own log format for consistency across your application:
 
 ```dart
-// Slack-style format
-LoggerOptions.instance.configure(
-  includeTimestamp: true,
-  messageTemplate: '[{timestamp}] {level} | {tag} | {message}',
-);
+// Slack-style format (using static methods)
+LoggerOptions.setIncludeTimestamp(true);
+LoggerOptions.setMessageTemplate('[{timestamp}] {level} | {tag} | {message}');
 
 // JSON-style format
-LoggerOptions.instance.configure(
-  messageTemplate: '{"time":"{timestamp}","level":"{level}","tag":"{tag}","msg":"{message}"}',
-);
+LoggerOptions.setMessageTemplate('{"time":"{timestamp}","level":"{level}","tag":"{tag}","msg":"{message}"}');
 
 // Minimal format
-LoggerOptions.instance.configure(
-  messageTemplate: '{level}: {message}',
+LoggerOptions.setMessageTemplate('{level}: {message}');
+
+// Or configure multiple settings at once
+LoggerOptions.configure(
+  includeTimestamp: true,
+  messageTemplate: '[{timestamp}] {level} | {tag} | {message}',
 );
 
 final logger = Logger(tag: 'CUSTOM');
@@ -554,8 +589,8 @@ import 'package:flutter/foundation.dart';
 
 void configureProductionLogging() {
   if (kReleaseMode) {
-    // Production: Essential logging only
-    LoggerOptions.instance.configure(
+    // Production: Essential logging only (using static methods)
+    LoggerOptions.configure(
       minLogLevel: LogLevel.warn,  // Only warnings and errors
       enableColors: false,         // No colors in production
       showLocation: false,         // Cleaner production logs
@@ -563,7 +598,7 @@ void configureProductionLogging() {
     );
   } else {
     // Development: Full interactive logging
-    LoggerOptions.instance.configure(
+    LoggerOptions.configure(
       minLogLevel: LogLevel.debug,
       enableColors: true,
       showLocation: true,
@@ -574,6 +609,21 @@ void configureProductionLogging() {
 ```
 
 ## 🔧 API Reference
+
+### LoggerOptions Static Methods
+
+| Method                                    | Description                                | Example                                    |
+| ------------------------------------------- | -------------------------------------------- | -------------------------------------------- |
+| `LoggerOptions.configure({...})`          | Configure multiple options at once        | `LoggerOptions.configure(enableColors: false)` |
+| `LoggerOptions.reset()`                   | Reset all settings to defaults            | `LoggerOptions.reset()`                    |
+| `LoggerOptions.setEnableLogging(bool)`    | Enable/disable all logging                | `LoggerOptions.setEnableLogging(false)`   |
+| `LoggerOptions.setEnableColors(bool)`     | Enable/disable ANSI colors                | `LoggerOptions.setEnableColors(true)`     |
+| `LoggerOptions.setMinLogLevel(LogLevel)`  | Set minimum log level                      | `LoggerOptions.setMinLogLevel(LogLevel.warn)` |
+| `LoggerOptions.setShowFunctionName(bool)` | Show/hide function names                   | `LoggerOptions.setShowFunctionName(false)` |
+| `LoggerOptions.setShowLocation(bool)`     | Show/hide file location info               | `LoggerOptions.setShowLocation(true)`     |
+| `LoggerOptions.setIncludeTimestamp(bool)` | Include/exclude timestamps                 | `LoggerOptions.setIncludeTimestamp(true)` |
+| `LoggerOptions.setDateTimeFormat(String)` | Set custom timestamp format               | `LoggerOptions.setDateTimeFormat('HH:mm:ss')` |
+| `LoggerOptions.setMessageTemplate(String)` | Set custom message template               | `LoggerOptions.setMessageTemplate('{level}: {message}')` |
 
 ### LoggerOptions Properties
 
@@ -597,6 +647,17 @@ void configureProductionLogging() {
 | `enableColors`     | `bool?`   | Override global colors         | Specific logger styling         |
 | `showFunctionName` | `bool?`   | Override function name display | Debug-specific loggers          |
 | `showLocation`     | `bool?`   | Override location display      | Production vs development       |
+
+### Logger Instance Methods
+
+| Method                                    | Description                                | Example                                    |
+| ------------------------------------------- | -------------------------------------------- | -------------------------------------------- |
+| `logger.configure({...})`                 | Configure multiple local settings at once | `logger.configure(enableColors: false)`   |
+| `logger.reset()`                          | Reset to global defaults                  | `logger.reset()`                          |
+| `logger.setEnableLogging(bool)`           | Enable/disable logging for this logger   | `logger.setEnableLogging(false)`          |
+| `logger.setEnableColors(bool)`            | Enable/disable colors for this logger    | `logger.setEnableColors(true)`            |
+| `logger.setShowFunctionName(bool)`        | Show/hide function names for this logger | `logger.setShowFunctionName(false)`       |
+| `logger.setShowLocation(bool)`            | Show/hide location info for this logger  | `logger.setShowLocation(true)`            |
 
 ### JSON Logging API
 
@@ -640,7 +701,7 @@ Flutter Logger Pro is built for production use with several performance optimiza
 
 ```dart
 // ✅ Good: Early filtering prevents expensive operations
-LoggerOptions.instance.configure(minLogLevel: LogLevel.warn);
+LoggerOptions.setMinLogLevel(LogLevel.warn);
 logger.debug('This expensive ${computeExpensiveValue()}'); // Never computed
 
 // ✅ Good: Lazy evaluation
@@ -670,13 +731,13 @@ import 'package:flutter/foundation.dart';
 // Configure once at app startup
 void configureLogging() {
   if (kReleaseMode) {
-    LoggerOptions.instance.configure(
+    LoggerOptions.configure(
       minLogLevel: LogLevel.warn,  // Production: warnings and errors only
       enableColors: false,         // No colors in production logs
       showLocation: false,         // Cleaner production output
     );
   } else {
-    LoggerOptions.instance.configure(
+    LoggerOptions.configure(
       minLogLevel: LogLevel.debug, // Development: all logs
       showLocation: true,          // Helpful for debugging
     );
@@ -706,6 +767,68 @@ Flutter Logger Pro is designed with **web development as the primary platform** 
 - **📊 Interactive Data**: Native browser console allows real-time object exploration
 - **⚡ Performance**: Direct JavaScript object logging without serialization overhead
 - **🎯 Developer Experience**: Seamless integration with existing web development workflows
+
+## 🔄 Upgrading to Static Methods
+
+If you're upgrading from a previous version, you can now use the cleaner static methods:
+
+#### Before (still works for backward compatibility):
+```dart
+LoggerOptions.instance.configure(
+  enableLogging: true,
+  enableColors: false,
+);
+LoggerOptions.instance.reset();
+```
+
+#### After (recommended new approach):
+```dart
+// Bulk configuration
+LoggerOptions.configure(
+  enableLogging: true,
+  enableColors: false,
+);
+
+// Individual property updates
+LoggerOptions.setEnableColors(true);
+LoggerOptions.setMinLogLevel(LogLevel.warn);
+
+// Reset to defaults
+LoggerOptions.reset();
+
+// Per-instance configuration (new feature)
+final logger = Logger(tag: 'MyService', enableColors: false);
+logger.configure(showLocation: true, showFunctionName: false);
+logger.setEnableLogging(false);
+logger.reset(); // Back to global defaults
+```
+
+#### Benefits of Static Methods:
+- **Cleaner API**: No need to access `.instance`
+- **Better IDE Support**: Improved autocomplete and discoverability
+- **Granular Updates**: Update individual properties without full reconfiguration
+- **Backward Compatible**: All existing code continues to work
+
+#### Benefits of Logger Instance Methods:
+- **Per-Logger Customization**: Each logger can have its own settings
+- **Runtime Configuration**: Change logger behavior dynamically during execution
+- **Flexible Hierarchy**: Global defaults → constructor parameters → runtime methods
+- **Easy Reset**: Quickly revert to global defaults with `logger.reset()`
+
+#### Configuration Hierarchy:
+```dart
+// 1. Global defaults (lowest priority)
+LoggerOptions.configure(enableColors: true, showLocation: false);
+
+// 2. Constructor parameters (medium priority)
+final logger = Logger(tag: 'API', enableColors: false);
+
+// 3. Runtime instance methods (highest priority)
+logger.setShowLocation(true);
+logger.configure(showFunctionName: false);
+
+// Result: enableColors=false, showLocation=true, showFunctionName=false
+```
 
 ## 🤝 Contributing
 
