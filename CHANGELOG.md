@@ -5,7 +5,7 @@ All notable changes to Logger Plus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.0.3]
 
 ### ✨ Added
 
@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Dart SDK Constraint Widening
 
-- **Broader Compatibility**: Updated Dart SDK constraint from `^3.9.2` to `>=3.0.0 <4.0.0`
+- **Broader Compatibility**: Updated Dart SDK constraint from `^3.9.2` to `>3.3.0 <4.0.0`
 - **Enhanced Accessibility**: Package now supports a wider range of Dart SDK versions
 - **Future-Proof**: Ensures compatibility with upcoming Dart releases while maintaining stability
 
