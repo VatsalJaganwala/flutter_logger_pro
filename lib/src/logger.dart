@@ -28,18 +28,17 @@ class Logger {
     // bool? showClassName, // Hidden for future release
     bool? showFunctionName,
     bool? showLocation,
-  }) : className = StackTraceParser.getCallerClass(),
-       enableColors =
-           enableColors ?? LoggerOptions.instance.effectiveEnableColors,
-       enableLogging =
-           enableLogging ?? LoggerOptions.instance.effectiveEnableLogging,
-       showClassName = LoggerOptions
-           .instance
-           .effectiveShowClassName, // Always use global (disabled)
-       showFunctionName =
-           showFunctionName ?? LoggerOptions.instance.effectiveShowFunctionName,
-       showLocation =
-           showLocation ?? LoggerOptions.instance.effectiveShowLocation;
+  })  : className = StackTraceParser.getCallerClass(),
+        enableColors =
+            enableColors ?? LoggerOptions.instance.effectiveEnableColors,
+        enableLogging =
+            enableLogging ?? LoggerOptions.instance.effectiveEnableLogging,
+        showClassName = LoggerOptions
+            .instance.effectiveShowClassName, // Always use global (disabled)
+        showFunctionName = showFunctionName ??
+            LoggerOptions.instance.effectiveShowFunctionName,
+        showLocation =
+            showLocation ?? LoggerOptions.instance.effectiveShowLocation;
 
   /// Log an info message
   void info(String message) => _log(LogLevel.info, message);
@@ -110,7 +109,8 @@ class Logger {
     List<String>? columns,
     LogLevel level = LogLevel.info,
     String? label,
-  }) => _logTable(level, data, columns, label);
+  }) =>
+      _logTable(level, data, columns, label);
 
   /// Convenience method to log table at info level
   void tableInfo(Object? data, {List<String>? columns, String? label}) =>

@@ -60,6 +60,15 @@ dependencies:
   flutter_logger_pro: ^0.0.1
 ```
 
+### 📦 **Compatibility**
+
+Flutter Logger Pro supports a wide range of Dart SDK versions for maximum compatibility:
+
+- **Dart SDK**: `>=3.0.0 <4.0.0` (supports Dart 3.0 and above)
+- **Flutter**: `>=1.17.0` (compatible with most Flutter versions)
+
+This broad compatibility ensures the package works with both legacy and cutting-edge Flutter projects.
+
 **For Flutter Web projects** (recommended):
 
 ```yaml
@@ -72,6 +81,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 ```
+
+> **💡 Compatibility Note**: Flutter Logger Pro supports Dart SDK `>=3.0.0 <4.0.0`, ensuring compatibility with a wide range of Flutter projects from legacy to cutting-edge versions.
 
 ### 🌐 **30-Second Web Setup**
 
@@ -904,6 +915,7 @@ flutter build web --release
 - **Configurable**: Fine-tune logging for different environments
 - **Cross-Platform**: Same API works on web, mobile, desktop, and server
 - **Reliable**: Comprehensive error handling and fallbacks
+- **Wide Compatibility**: Supports Dart SDK `>=3.0.0 <4.0.0` for maximum project compatibility
 
 ### ✅ **Developer Experience**
 

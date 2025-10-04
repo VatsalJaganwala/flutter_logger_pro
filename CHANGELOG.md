@@ -48,6 +48,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **API Reference**: Added comprehensive documentation for new static methods and individual property setters
 - **Usage Patterns**: Added examples showing both bulk configuration and individual property updates
 
+### 📦 Package Compatibility
+
+#### Dart SDK Constraint Widening
+
+- **Broader Compatibility**: Updated Dart SDK constraint from `^3.9.2` to `>=3.0.0 <4.0.0`
+- **Enhanced Accessibility**: Package now supports a wider range of Dart SDK versions
+- **Future-Proof**: Ensures compatibility with upcoming Dart releases while maintaining stability
+
 ## [0.0.2] - 2024-10-02
 
 ### 🔧 Fixed
