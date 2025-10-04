@@ -737,8 +737,8 @@ void main() {
       final logger3 = Logger(enableLogging: true);
       final logger4 = Logger(enableColors: true);
       final logger5 = Logger(
-        /* showClassName: true, */
-      ); // Hidden for future release
+          /* showClassName: true, */
+          ); // Hidden for future release
       final logger6 = Logger(showFunctionName: true);
       final logger7 = Logger(showLocation: true);
       final logger8 = Logger(

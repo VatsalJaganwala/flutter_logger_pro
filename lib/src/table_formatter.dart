@@ -91,9 +91,8 @@ class TableFormatter {
     }
 
     // Find the maximum length to determine column count
-    final maxLength = data
-        .map((arr) => arr.length)
-        .reduce((a, b) => a > b ? a : b);
+    final maxLength =
+        data.map((arr) => arr.length).reduce((a, b) => a > b ? a : b);
 
     // Create numeric column headers
     final numericHeaders = List.generate(maxLength, (i) => i.toString());

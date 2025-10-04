@@ -65,8 +65,7 @@ class OutputFormatter {
       final contentLength = AnsiColors.stripAnsiCodes(
         '$greyPrefix$message',
       ).length;
-      final padding =
-          ' ' *
+      final padding = ' ' *
           (_defaultTerminalWidth - contentLength - shortLocation.length - 2)
               .clamp(1, _defaultTerminalWidth);
 

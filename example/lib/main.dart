@@ -167,22 +167,22 @@ void configurationExample() {
 
   final customLogger = Logger(tag: 'Custom');
   customLogger.info('Message with custom template');
-  
+
   // Demonstrate per-instance configuration
   final instanceLogger = Logger(tag: 'Instance');
-  
+
   // Configure this specific logger instance
   instanceLogger.configure(
     enableColors: false,
     showLocation: true,
   );
   instanceLogger.info('Logger with custom instance settings');
-  
+
   // Individual setters for this logger
   instanceLogger.setEnableColors(true);
   instanceLogger.setShowFunctionName(false);
   instanceLogger.info('Updated with individual setters');
-  
+
   // Reset to global defaults
   instanceLogger.reset();
   instanceLogger.info('Reset to global defaults');

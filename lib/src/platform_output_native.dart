@@ -101,9 +101,8 @@ class PlatformOutputImpl {
       _printLongString(formattedMessage);
     } catch (e) {
       // Fallback for non-JSON-serializable objects
-      final fallbackMessage = label != null
-          ? '$label: ${object.toString()}'
-          : object.toString();
+      final fallbackMessage =
+          label != null ? '$label: ${object.toString()}' : object.toString();
 
       final formattedMessage = OutputFormatter.formatMessage(
         level: level,
@@ -166,9 +165,8 @@ class PlatformOutputImpl {
       _printLongString(formattedMessage);
     } catch (e) {
       // Fallback to regular string output
-      final fallbackMessage = label != null
-          ? '$label: ${data.toString()}'
-          : data.toString();
+      final fallbackMessage =
+          label != null ? '$label: ${data.toString()}' : data.toString();
 
       final formattedMessage = OutputFormatter.formatMessage(
         level: level,
